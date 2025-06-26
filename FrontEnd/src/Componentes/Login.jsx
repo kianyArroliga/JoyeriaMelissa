@@ -14,10 +14,10 @@ const Login = () => {
         axios.post('http://localhost:3001/api/users/login', { correo: email, contraseña: password })
 
             .then(res => {
-                console.log('Respuesta del backend:', res.data);  // Verifica los datos que devuelve el backend
+                console.log('Respuesta del backend:', res.data);  
             })
             .catch(err => {
-                console.log('Error al hacer la solicitud:', err);  // Verifica el error en caso de fallo
+                console.log('Error al hacer la solicitud:', err);  
             });
     };
 
