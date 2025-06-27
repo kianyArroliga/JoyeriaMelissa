@@ -12,7 +12,7 @@ const Login = () => {
     
         
         // Enviar los datos de login al backend
-        axios.post('http://localhost:3001/api/users/login', { correo: email, contraseña: password })
+        axios.post('https://joyeriamelissa-1.onrender.com', { correo: email, contraseña: password })
 
             .then(res => {
                 console.log('Respuesta del backend:', res.data);  
