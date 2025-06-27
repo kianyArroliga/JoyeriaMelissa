@@ -9,6 +9,7 @@ const Login = () => {
     
     const handleSubmit = (e) => {
         e.preventDefault();
+    
         
         // Enviar los datos de login al backend
         axios.post('http://localhost:3001/api/users/login', { correo: email, contraseña: password })
