@@ -7,7 +7,7 @@ const app = express();
 
 const allowedOrigins = [
     'http://localhost:5173',  
-    'https://joyeriamelissa-1.onrender.com' 
+    'https://joyeria-melissa-aguilar.onrender.com' 
 ];
 
 app.use(cors({
