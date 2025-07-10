@@ -53,10 +53,13 @@ module.exports = {
           '5': 'hsl(var(--chart-5))'
         }
       },
+      maxWidth: {
+        container: "1200px", // <- clase necesaria para centrar tu contenido
+      },
     },
   },
   plugins: [
     require("tailwindcss-animate"),
-    require('tailwind-scrollbar')({ nocompatible: true })
-  ]
+    require('tailwind-scrollbar')({ nocompatible: true }),
+  ],
 };
