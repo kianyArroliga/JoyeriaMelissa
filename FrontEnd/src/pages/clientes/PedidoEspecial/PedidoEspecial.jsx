@@ -18,8 +18,18 @@ const PedidoEspecial = () => {
   const [pieza, setPieza] = useState("");
   const [talla, setTalla] = useState("");
   const [tipoPiedra, setTipoPiedra] = useState("");
+  const [referencia, setReferencia] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [mensaje, setMensaje] = useState("");
   const [mensajeExito, setMensajeExito] = useState("");
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setReferencia(file);
+      setPreview(URL.createObjectURL(file));
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -36,8 +46,9 @@ const PedidoEspecial = () => {
     setPieza("");
     setTalla("");
     setTipoPiedra("");
+    setReferencia(null);
+    setPreview(null);
 
-    // Ocultar mensaje de éxito luego de 5 segundos
     setTimeout(() => setMensajeExito(""), 5000);
   };
 
@@ -64,8 +75,9 @@ const PedidoEspecial = () => {
         {mensaje && <p className="text-red-500 mb-4">{mensaje}</p>}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 max-w-xl">
+          {/* Pieza */}
           <label htmlFor="pieza" className="font-semibold">
-            Pieza*:
+            Pieza (obligatorio):
             <select
               id="pieza"
               className="w-full border px-2 py-1 mt-1"
@@ -81,6 +93,7 @@ const PedidoEspecial = () => {
             </select>
           </label>
 
+          {/* Talla si es anillo */}
           {pieza === "Anillo" && (
             <label htmlFor="talla" className="font-semibold">
               Talla (solo si es anillo):
@@ -95,8 +108,9 @@ const PedidoEspecial = () => {
             </label>
           )}
 
+          {/* Tipo de piedra */}
           <label htmlFor="tipoPiedra" className="font-semibold">
-            Tipo de Piedra*:
+            Tipo de Piedra (obligatorio):
             <select
               id="tipoPiedra"
               className="w-full border px-2 py-1 mt-1"
@@ -110,6 +124,27 @@ const PedidoEspecial = () => {
             </select>
           </label>
 
+          {/* Imagen de referencia */}
+          <label htmlFor="referencia" className="font-semibold">
+            Imagen de Referencia (opcional):
+            <input
+              id="referencia"
+              type="file"
+              accept="image/*"
+              className="w-full border px-2 py-1 mt-1"
+              onChange={handleFileChange}
+            />
+          </label>
+
+          {/* Vista previa */}
+          {preview && (
+            <div className="mt-2">
+              <p className="text-sm text-gray-600">Vista previa:</p>
+              <img src={preview} alt="Vista previa" className="w-40 h-40 object-cover rounded-md mt-2" />
+            </div>
+          )}
+
+          {/* Botón de enviar */}
           <button
             type="submit"
             className="w-44 bg-primeColor text-white py-2 hover:bg-black duration-200"
@@ -118,6 +153,7 @@ const PedidoEspecial = () => {
           </button>
         </form>
 
+        {/* Ejemplo según tipo de pieza */}
         {pieza && (
           <div className="mt-8">
             <h2 className="font-semibold text-lg mb-2">Ejemplo de {pieza}:</h2>

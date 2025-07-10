@@ -54,7 +54,7 @@ module.exports = {
         }
       },
       maxWidth: {
-        container: "1200px", // <- clase necesaria para centrar tu contenido
+        container: "1200px", 
       },
     },
   },
