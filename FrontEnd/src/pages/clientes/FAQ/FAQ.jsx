@@ -1,0 +1,60 @@
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import Breadcrumbs from "@/components/ui/pageProps/Breadcrumbs";
+
+const FAQ = () => {
+  const location = useLocation();
+  const [prevLocation, setPrevLocation] = useState("");
+
+  useEffect(() => {
+    setPrevLocation(location.state?.data || "Inicio");
+  }, [location]);
+
+  const preguntasFrecuentes = [
+    {
+      pregunta: "¿Realizan envíos internacionales?",
+      respuesta: "Actualmente solo realizamos envíos dentro de Costa Rica.",
+    },
+    {
+      pregunta: "¿Las piezas son hechas a mano?",
+      respuesta:
+        "Sí, todas las joyas son diseñadas y elaboradas a mano por Melissa Aguilar con piedras seleccionadas cuidadosamente.",
+    },
+    {
+      pregunta: "¿Puedo solicitar una pieza personalizada?",
+      respuesta:
+        "¡Por supuesto! Podés realizar un pedido especial desde la sección correspondiente.",
+    },
+    {
+      pregunta: "¿Qué tipo de piedras utilizan?",
+      respuesta:
+        "Trabajamos con piedras naturales y sintéticas según la solicitud del cliente. Siempre se indica claramente el tipo en la descripción.",
+    },
+    {
+      pregunta: "¿Cómo puedo pagar?",
+      respuesta:
+        "Aceptamos pagos por SINPE Móvil y transferencia bancaria. Al finalizar el pedido se te brindarán los detalles.",
+    },
+  ];
+
+  return (
+    <div className="max-w-container mx-auto px-4">
+      <Breadcrumbs title="Preguntas Frecuentes" prevLocation={prevLocation} />
+      <div className="py-10">
+        <h2 className="text-2xl font-titleFont font-semibold mb-6 text-primeColor">
+          Preguntas Frecuentes
+        </h2>
+        <div className="flex flex-col gap-6">
+          {preguntasFrecuentes.map((faq, index) => (
+            <div key={index} className="border-b pb-4">
+              <h3 className="text-lg font-semibold">{faq.pregunta}</h3>
+              <p className="text-sm mt-2 text-lightText">{faq.respuesta}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default FAQ;
