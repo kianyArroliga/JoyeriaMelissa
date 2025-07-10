@@ -31,13 +31,13 @@ export const carritoSlice = createSlice({
       const producto = state.productos.find(
         (item) => item._id === action.payload._id
       );
-      if (producto.cantidad > 1) {
+      if (producto && producto.cantidad > 1) {
         producto.cantidad--;
       }
     },
     eliminarProducto: (state, action) => {
       state.productos = state.productos.filter(
-        (item) => item._id !== action.payload
+        (item) => item._id !== action.payload._id
       );
     },
     vaciarCarrito: (state) => {

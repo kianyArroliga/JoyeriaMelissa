@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-
 import Breadcrumbs from "@/components/ui/pageProps/Breadcrumbs";
 import { vaciarCarrito } from "@/redux/carritoSlice";
 import { emptyCart } from "@/assets/images";
@@ -54,7 +53,7 @@ const Carrito = () => {
           </div>
 
           <button
-            onClick={() => dispatch(vaciarCarrito ())}
+            onClick={() => dispatch(vaciarCarrito())}
             className="py-2 px-10 bg-red-500 text-white font-semibold uppercase mb-4 hover:bg-red-700 duration-300"
           >
             Vaciar carrito
@@ -65,9 +64,9 @@ const Carrito = () => {
               <input
                 className="w-44 mdl:w-52 h-8 px-4 border text-primeColor text-sm outline-none border-gray-400"
                 type="text"
-                placeholder="Código de cupón"
+                placeholder="Código de giftcard"
               />
-              <p className="text-sm mdl:text-base font-semibold">Aplicar cupón</p>
+              <p className="text-sm mdl:text-base font-semibold">Aplicar giftcard</p>
             </div>
             <p className="text-lg font-semibold">Actualizar carrito</p>
           </div>

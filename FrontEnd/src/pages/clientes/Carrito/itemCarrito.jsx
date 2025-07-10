@@ -10,6 +10,14 @@ import { FiTrash2 } from "react-icons/fi";
 const ItemCarrito = ({ producto }) => {
   const dispatch = useDispatch();
 
+  if (!producto || !producto.imagen) {
+    return (
+      <div className="p-4 border border-red-400 bg-red-100 text-red-800 rounded-md">
+        Error: Producto no válido en el carrito.
+      </div>
+    );
+  }
+
   return (
     <div className="flex items-center justify-between border p-4 rounded-md">
       <div className="flex items-center gap-4">

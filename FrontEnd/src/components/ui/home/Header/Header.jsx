@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { MdClose } from "react-icons/md";
 import { HiMenuAlt2 } from "react-icons/hi";
+import { FiShoppingCart } from "react-icons/fi";
 import { motion } from "framer-motion";
+import { useSelector } from "react-redux"; // 🔥 NUEVO
 import { logo } from "@/assets/images";
 import Image from "@/components/ui/designLayouts/Image";
 import Flex from "@/components/ui/designLayouts/Flex";
 import { navBarList } from "@/constants";
-
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(true);
