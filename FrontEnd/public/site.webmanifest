@@ -1,0 +1,35 @@
+{
+  "name": "Tienda Online Melissa Aguilar Joyería Artesanal",
+  "short_name": "MA Joyería",
+  "description": "Joyas artesanales hechas con amor por Melissa Aguilar. Anillos, aretes, pulseras y más, elaborados con piedras naturales y metales preciosos.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "lang": "es-CR",
+  "icons": [
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ]
+}
