@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash2 } from "lucide-react";
 import axios from 'axios'
- 
+
 export function ProductoCard({ producto, onProductoActualizado, onEditar }) {
   const eliminarProducto = async (idProducto) => {
     if (window.confirm("¿Estás seguro de eliminar este producto?")) {
@@ -16,50 +16,65 @@ export function ProductoCard({ producto, onProductoActualizado, onEditar }) {
       }
     }
   }
- 
-  const editarProducto = () => {
-    console.log("Editar producto:", producto)
-    // Aquí abrirías el modal de edición
-  }
- 
+
+
+
+
   return (
-    <Card className="w-64 bg-white rounded-md shadow hover:shadow-lg transition duration-300">
+    <Card className="w-64 bg-gradient-to-b from-white via-gray-100 to-gray-50 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 flex flex-col overflow-hidden border border-gray-100">
+      {/* Imagen estática */}
       <img
         src={producto.image_url}
         alt={producto.nombre}
-        className="w-full h-32 object-cover rounded-t-md"
+        className="w-full h-52 object-cover rounded-t-xl"
       />
-      <CardContent className="p-2">
-        <h2 className="text-sm font-semibold text-gray-800 truncate">{producto.nombre}</h2>
-        <p className="text-gray-600 text-sm mb-1">₡{producto.precio}</p>
- 
-        <p
-          className={`text-sm font-semibold ${parseInt(producto.estado, 10) === 1 ? "text-green-600" : "text-red-600"
-            }`}
-        >
-          {parseInt(producto.estado, 10) === 1 ? "Disponible" : "No Disponible"}
-        </p>
- 
- 
- 
-        <div className="flex justify-end gap-1">
-          <Button
-            variant="ghost"
-            className="text-[#8C162A] hover:text-[#660022] p-1"
-            onClick={() => onEditar(producto)}
-          >
-            <Pencil className="w-4 h-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            className="text-[#BAD1C9] hover:text-[#8FB6AC] p-1"
-            onClick={() => eliminarProducto(producto.idProducto)}
-          >
-            <Trash2 className="w-4 h-4" />
-          </Button>
+
+      {/* Contenido */}
+      <CardContent className="p-3 flex flex-col justify-between flex-grow">
+        <div className="flex justify-between items-start">
+          {/* Texto elegante */}
+          <div>
+            <h2 className="text-base font-semibold text-gray-800 tracking-tight">
+              {producto.nombre}
+            </h2>
+            <p className="text-gray-600 text-sm font-medium">₡{producto.precio}</p>
+            <p
+              className={`text-sm font-semibold mt-1 ${parseInt(producto.estado, 10) === 1
+                ? "text-green-500"
+                : "text-red-500"
+                }`}
+            >
+              {parseInt(producto.estado, 10) === 1
+                ? "Disponible"
+                : "No Disponible"}
+            </p>
+          </div>
+
+          {/* Botones con animación */}
+          <div className="flex flex-col gap-1.5">
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full border-gray-300 p-1 w-7 h-7 bg-gray-100 hover:scale-110 hover:bg-gray-300 transition-transform duration-300"
+              onClick={() => onEditar(producto)}
+            >
+              <Pencil className="w-3 h-3" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full border-gray-300 p-1 w-7 h-7 bg-gray-100 hover:scale-110 hover:bg-gray-300 transition-transform duration-300"
+              onClick={() => eliminarProducto(producto.idProducto)}
+            >
+              <Trash2 className="w-3 h-3" />
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
- 
+
+
+
+
   )
 }

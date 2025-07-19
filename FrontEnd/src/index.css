@@ -30,6 +30,7 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
   }
+
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
@@ -56,13 +57,40 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
+  /*Quitar bordes duplicados en Select de Shadcn */
+  [data-radix-popper-content-wrapper],
+  [data-radix-popper-content-wrapper] * {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  /* Evitar borde negro en inputs y selects nativos */
+  input:focus,
+  select:focus,
+  textarea:focus,
+  button:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border-color: inherit !important;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
 }
 
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
+
 }

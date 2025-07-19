@@ -105,6 +105,7 @@ export default function DashboardAdmin() {
       <div className="flex flex-1 overflow-hidden">
         <main className="flex-1 p-6 overflow-y-auto">
           <div className="flex flex-col gap-8">
+            
             {/* Sección Regular */}
             <div className="flex flex-col gap-4">
               <div className="flex gap-4 overflow-x-auto justify-center md:pl-12 scrollbar-none">

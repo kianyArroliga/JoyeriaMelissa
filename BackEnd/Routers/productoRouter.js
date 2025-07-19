@@ -7,8 +7,6 @@ const ProductoTo = require('../Modelo/ProductoTo')
  
 // Agregrar un producto
 router.post('/agregar',upload.single('imagen'), ProductoController.agregarProducto);
-// Cliente: listar solo productos activos
-router.get('/activos', ProductoController.listarActivos);
 // Admin: listar todos los productos (activos e inactivos)
 router.get('/todos', ProductoController.listarTodos);
 // Actualizar un producto
