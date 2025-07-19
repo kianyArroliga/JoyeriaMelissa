@@ -7,6 +7,7 @@ const piedraRouter = require('./Routers/piedraRouter');
 const productoRouter = require('./Routers/productoRouter');
 const tallaRouter = require('./Routers/tallaRouter');
 const ProductoTallaController = require('./Routers/productoTallaRouter');
+const catalogoRouter = require('./Routers/catalogoRouter');
 
 const app = express();
 
@@ -28,9 +29,7 @@ app.use(cors({
     allowedHeaders: ['Content-Type'],
 }));
 
-
 app.use(express.json());
-
 
 app.use('/api/users', userRoutes);
 app.use('/api/categorias', categoriaRouter);
@@ -39,12 +38,11 @@ app.use('/api/piedras', piedraRouter);
 app.use('/api/productos', productoRouter);
 app.use('/api/tallas', tallaRouter);
 app.use('/api/producto-talla', ProductoTallaController);
+app.use('/api/catalogo', catalogoRouter);
  
-
 app.get('/', (req, res) => {
     res.send('Backend funcionando correctamente');
 });
-
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, '0.0.0.0', () => {
