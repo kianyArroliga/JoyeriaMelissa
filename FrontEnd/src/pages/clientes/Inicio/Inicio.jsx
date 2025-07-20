@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-
+import axios from "axios";
 import bannerImgOne from "@/assets/images/banner/bannerImgOne.png";
 import bannerImgTwo from "@/assets/images/banner/bannerImgTwo.png";
 import bannerImgThree from "@/assets/images/banner/bannerImgThree.png";
+import Product from "@/components/ui/home/Products/Product";
 
 import forgetMeNotTurmalinas from "@/assets/images/products/Aretes/Plata/ForgetMeNotConTurmalinas.jpg";
 import pulseraAmazonita from "@/assets/images/products/Pulseras/Plata/PulseraPlataPerlasAmazonitaNatural.jpg";
@@ -18,6 +19,21 @@ const Inicio = () => {
     }, 2000);
     return () => clearInterval(interval);
   }, [banners.length]);
+
+  const [productos, setProductos] = useState([]);
+
+  useEffect(() => {
+    const obtenerProductos = async () => {
+      try {
+        const res = await axios.get("http://localhost:4000/api/catalogo/destacados");
+        console.log("Productos cargados:", res.data);
+        setProductos(res.data);
+      } catch (error) {
+        console.error("Error al cargar los productos:", error);
+      }
+    };
+    obtenerProductos();
+  }, []);
 
   return (
     <div className="w-full mx-auto">
@@ -40,21 +56,21 @@ const Inicio = () => {
         <section className="my-12">
           <h2 className="text-2xl font-semibold mb-6 text-center">Piezas Destacadas</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center">
-              <img src={forgetMeNotTurmalinas} alt="Aretes de plata con turmalinas" className="mx-auto" />
-              <h3 className="font-semibold mt-2">Aretes Forget-me-not</h3>
-              <p className="text-[#767676]">$35.00 USD</p>
-            </div>
-            <div className="text-center">
-              <img src={pulseraAmazonita} alt="Pulsera de plata con amazonita" className="mx-auto" />
-              <h3 className="font-semibold mt-2">Pulsera con Amazonita</h3>
-              <p className="text-[#767676]">$40.00 USD</p>
-            </div>
-            <div className="text-center">
-              <img src={oro1} alt="Anillo de oro artesanal" className="mx-auto" />
-              <h3 className="font-semibold mt-2">Anillo de Oro Artesanal</h3>
-              <p className="text-[#767676]">$120.00 USD</p>
-            </div>
+            {productos.map((producto) => (
+              <Product
+                key={producto.idProducto}
+                idProducto={producto.idProducto}
+                nombreProducto={producto.nombreProducto}
+                descripcion={producto.descripcion}
+                precio={producto.precio}
+                precioEspecial={producto.precioEspecial}
+                image_url={producto.image_url}
+                nombreMaterial={producto.nombreMaterial}
+                destacado={producto.destacado}
+                tallasDisponibles={producto.tallasDisponibles}
+                imagen_url = { producto.imagen_url }
+              />
+              ))}
           </div>
         </section>
 
