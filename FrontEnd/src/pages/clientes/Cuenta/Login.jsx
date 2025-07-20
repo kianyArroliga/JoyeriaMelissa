@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -10,9 +10,9 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [mensaje, setMensaje] = useState('');
     const [tipoMensaje, setTipoMensaje] = useState('');
+    const navigate = useNavigate(); // Usamos useNavigate para redirigir al perfil después del login exitoso
 
-
-        useEffect(() => {
+    useEffect(() => {
         // Cambiar el título de la pestaña
         document.title = 'Iniciar sesión';
 
@@ -28,7 +28,6 @@ const Login = () => {
         }
     }, []);
 
-
     const handleSubmit = (e) => {
         e.preventDefault();
         setMensaje('');
@@ -39,8 +38,16 @@ const Login = () => {
             contraseña: password
         })
             .then(res => {
-                setTipoMensaje('exito');
-                setMensaje('¡Inicio de sesión exitoso!');
+                // Si el login es exitoso, obtenemos el token
+                if (res.data.token) {
+                    // Guardamos el token JWT en el localStorage
+                    localStorage.setItem("authToken", res.data.token);
+                    setTipoMensaje('exito');
+                    setMensaje('¡Inicio de sesión exitoso!');
+
+                    // Redirigir a la página de perfil
+                    navigate("/perfil"); // Usamos navigate para redirigir
+                }
             })
             .catch(err => {
                 setTipoMensaje('error');
