@@ -29,6 +29,9 @@ import FAQ from "./pages/clientes/FAQ/FAQ";
 import Pago from "./pages/clientes/Pago/Pago";
 import Carrito from "./pages/clientes/Carrito/Carrito";
 import DetallesProducto from "./pages/clientes/DetallesProducto/DetallesProducto";
+import Login from "./pages/clientes/Cuenta/Login";
+import Registro from "./pages/clientes/Cuenta/Registro"; 
+import PerfilUsuario from "./pages/clientes/Cuenta/PerfilUsuario";
 
 // Páginas admin
 import DashboardAdmin from "./pages/admin/DashboardAdmin";
@@ -80,6 +83,10 @@ const router = createBrowserRouter(
         <Route path="carrito" element={<Carrito />} />
         <Route path="pago" element={<Pago />} />
         <Route path="producto/:_id" element={<DetallesProducto />} />
+        <Route path="login" element={<Login />} /> 
+        <Route path="registro" element={<Registro />} /> 
+        <Route path="perfil" element={<PerfilUsuario />} 
+        />
       </Route>
 
       {/* Rutas admin */}

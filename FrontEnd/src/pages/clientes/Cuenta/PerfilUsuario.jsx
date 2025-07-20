@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { logout } from "../redux/actions";
+//import { logout } from "../redux/actions";
 import axios from 'axios';
 
 const PerfilUsuario = () => {
@@ -21,7 +21,7 @@ const PerfilUsuario = () => {
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     if (!token) {
-      navigate("/inicio"); // Redirigir a inicio si no hay token
+      navigate("/login"); // Redirigir a inicio si no hay token
     }
   }, [navigate]);
 
@@ -55,7 +55,7 @@ const PerfilUsuario = () => {
     const token = localStorage.getItem("authToken");
 
     if (!token) {
-      return navigate("/inicio");
+      return navigate("/perfil");
     }
 
     try {

@@ -126,7 +126,7 @@ const HeaderBottom = () => {
                 transition={{ duration: 0.5 }}
                 className="absolute top-6 left-0 z-50 bg-primeColor w-44 text-[#767676] p-4 pb-6"
               >
-                <Link to="/clientes/inicio-sesion">
+                <Link to="/clientes/login">
                   <li className="text-gray-400 px-4 py-1 border-b border-gray-400 hover:text-white hover:border-b-white duration-300">
                     Iniciar sesión
                   </li>
@@ -136,9 +136,11 @@ const HeaderBottom = () => {
                     Registrarse
                   </li>
                 </Link>
-                <li className="text-gray-400 px-4 py-1 border-b border-gray-400 hover:text-white hover:border-b-white duration-300">
-                  Perfil
-                </li>
+                <Link to="/clientes/perfil">
+                  <li className="text-gray-400 px-4 py-1 border-b border-gray-400 hover:text-white hover:border-b-white duration-300">
+                    Perfil
+                  </li>
+                </Link>
               </motion.ul>
             )}
             <Link to="/carrito">
