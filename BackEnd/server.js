@@ -8,7 +8,8 @@ const productoRouter = require('./Routers/productoRouter');
 const tallaRouter = require('./Routers/tallaRouter');
 const ProductoTallaController = require('./Routers/productoTallaRouter');
 const catalogoRouter = require('./Routers/catalogoRouter');
-const pedidoEspecialRouter = require('./Routers/pedidoEspecialRouter'); 
+//const pedidoEspecialRouter = require('./Routers/pedidoEspecialRouter'); 
+const preguntaRouter = require('./Routers/preguntaRouter'); 
 
 const app = express();
 
@@ -40,7 +41,8 @@ app.use('/api/productos', productoRouter);
 app.use('/api/tallas', tallaRouter);
 app.use('/api/producto-talla', ProductoTallaController);
 app.use('/api/catalogo', catalogoRouter);
-app.use('/api/pedidos-especiales', pedidoEspecialRouter);   
+//app.use('/api/pedidos-especiales', pedidoEspecialRouter);   
+app.use('/api/preguntas', preguntaRouter);   
 
 app.get('/', (req, res) => {
     res.send('Backend funcionando correctamente');
