@@ -17,7 +17,7 @@ const PedidoEspecial = () => {
   // Redireccion automatica a la pagina de login o registro 
   //  useEffect(() => { 
   //    if (!usuario || usuario.length === 0) { 
-  //      navigate("/login"); 
+  //      navigate("/clientes/login"); 
   //    } 
   //  }, [usuario]); 
 

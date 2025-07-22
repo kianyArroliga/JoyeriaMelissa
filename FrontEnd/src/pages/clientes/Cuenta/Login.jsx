@@ -33,7 +33,7 @@ const Login = () => {
         setMensaje('');
         setTipoMensaje('');
 
-        axios.post('http://localhost:4000/api/users/login', {
+        axios.post('http://localhost:4000/api/users/clientes/login', {
             correo: email,
             contraseña: password
         })

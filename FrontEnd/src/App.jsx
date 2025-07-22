@@ -29,9 +29,9 @@ import FAQ from "./pages/clientes/FAQ/FAQ";
 import Pago from "./pages/clientes/Pago/Pago";
 import Carrito from "./pages/clientes/Carrito/Carrito";
 import DetallesProducto from "./pages/clientes/DetallesProducto/DetallesProducto";
-import Login from "./pages/clientes/Cuenta/Login";
-import Registro from "./pages/clientes/Cuenta/Registro"; 
-import PerfilUsuario from "./pages/clientes/Cuenta/PerfilUsuario";
+import Login from "./pages/clientes/Cuenta/Login"; // Corregido
+import Registro from "./pages/clientes/Cuenta/Registro";
+import PerfilUsuario from "./pages/clientes/Cuenta/PerfilUsuario"; // Corregido
 
 // Páginas admin
 import DashboardAdmin from "./pages/admin/DashboardAdmin";
@@ -60,33 +60,21 @@ const router = createBrowserRouter(
       {/* Redirección raíz */}
       <Route path="/" element={<Navigate to="/clientes" />} />
 
-      {/* Rutas directas amigables (redirecciones) */}
-      <Route path="/catalogo" element={<Navigate to="/clientes/catalogo" />} />
-      <Route path="/contacto" element={<Navigate to="/clientes/contacto" />} />
-      <Route path="/faq" element={<Navigate to="/clientes/faq" />} />
-      <Route path="/carrito" element={<Navigate to="/clientes/carrito" />} />
-      <Route path="/pago" element={<Navigate to="/clientes/pago" />} />
-      <Route path="/acerca-de" element={<Navigate to="/clientes/acerca-de" />} />
-      <Route path="/pedido-especial" element={<Navigate to="/clientes/pedido-especial" />} />
-      <Route path="/ofertas-especiales" element={<Navigate to="/clientes/ofertas-especiales" />} />
-      <Route path="/producto/:_id" element={<Navigate to="/clientes/producto/:_id" />} />
-
       {/* Rutas cliente */}
       <Route path="/clientes" element={<LayoutCliente />} errorElement={<ErrorPage />}>
-        <Route index element={<Inicio />} />
-        <Route path="catalogo" element={<Catalogo />} />
-        <Route path="acerca-de" element={<AcercaDe />} />
-        <Route path="contacto" element={<Contacto />} />
-        <Route path="faq" element={<FAQ />} />
-        <Route path="pedido-especial" element={<PedidoEspecial />} />
-        <Route path="ofertas-especiales" element={<OfertasEspeciales />} />
-        <Route path="carrito" element={<Carrito />} />
-        <Route path="pago" element={<Pago />} />
-        <Route path="producto/:_id" element={<DetallesProducto />} />
-        <Route path="login" element={<Login />} /> 
-        <Route path="registro" element={<Registro />} /> 
-        <Route path="perfil" element={<PerfilUsuario />} 
-        />
+        <Route path="/clientes" element={<Inicio />} />
+        <Route path="/clientes/catalogo" element={<Catalogo />} />
+        <Route path="/clientes/acerca-de" element={<AcercaDe />} />
+        <Route path="/clientes/contacto" element={<Contacto />} />
+        <Route path="/clientes/faq" element={<FAQ />} />
+        <Route path="/clientes/pedido-especial" element={<PedidoEspecial />} />
+        <Route path="/clientes/ofertas-especiales" element={<OfertasEspeciales />} />
+        <Route path="/clientes/carrito" element={<Carrito />} />
+        <Route path="/clientes/pago" element={<Pago />} />
+        <Route path="/clientes/producto/:_id" element={<DetallesProducto />} />
+        <Route path="/clientes/login" element={<Login />} />  {/* Corregido */}
+        <Route path="/clientes/registro" element={<Registro />} />
+        <Route path="/clientes/perfil" element={<PerfilUsuario />} />  {/* Corregido */}
       </Route>
 
       {/* Rutas admin */}

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-//import { logout } from "../redux/actions";
 import axios from 'axios';
 
 const PerfilUsuario = () => {
@@ -21,14 +20,15 @@ const PerfilUsuario = () => {
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     if (!token) {
-      navigate("/login"); // Redirigir a inicio si no hay token
+      navigate("/clientes/login"); // Redirigir a inicio si no hay token
     }
   }, [navigate]);
 
-  // Si no hay usuario o no se ha cargado su información, no renderizamos nada
-  if (!usuario || usuario.length === 0) return null;
+  // Verificación de usuario
+  console.log(usuario); // Añadir esta línea para depurar
 
-  // Si no está en modo edición, tomamos los datos del usuario de Redux
+  if (!usuario || !usuario[0]) return <div>Cargando perfil...</div>; // Mostrar algo mientras los datos cargan
+
   const { nombre = "Usuario", correo = "No disponible", telefono = "No disponible" } = usuario[0] || {};
 
   // Función para manejar la edición del perfil
@@ -55,12 +55,12 @@ const PerfilUsuario = () => {
     const token = localStorage.getItem("authToken");
 
     if (!token) {
-      return navigate("/perfil");
+      return navigate("/clientes/login");
     }
 
     try {
       const response = await axios.put(
-        "http://localhost:4000/api/users/perfil",
+        "http://localhost:3000/api/users/clientes/perfil",
         formData,
         {
           headers: {
@@ -68,10 +68,17 @@ const PerfilUsuario = () => {
           }
         }
       );
-      
+
+      console.log(response.data); // Añadir esta línea para ver la respuesta de la API
+
       // Si la actualización es exitosa, actualizamos los datos en Redux y desactivamos la edición
       if (response.data.mensaje === "Perfil actualizado correctamente") {
         setIsEditing(false);
+        // Si deseas actualizar los datos en Redux también:
+        dispatch({
+          type: "UPDATE_USUARIO",
+          payload: response.data.usuario, // Ajusta según lo que devuelva la API
+        });
       }
     } catch (error) {
       console.error("Error al actualizar el perfil:", error);
