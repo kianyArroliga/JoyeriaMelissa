@@ -9,7 +9,7 @@ const OfertasEspeciales = () => {
   useEffect(() => {
     const obtenerProductos = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api/catalogo/ofertas");
+        const res = await axios.get("http://localhost:4000/api/clientes/catalogo/ofertas");
         console.log("Productos cargados:", res.data);
         setProductos(res.data);
       } catch (error) {

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const CatalogoController = require ('../Controllers/CatalogoController')
+const CatalogoController = require('../Controllers/catalogoController');
+
 
 
 // Ruta base

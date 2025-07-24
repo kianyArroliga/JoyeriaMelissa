@@ -1,4 +1,5 @@
-const catalogoModel = require('../Modelo/CatalogoTo');
+const catalogoModel = require('../Modelo/catalogoTo');
+
 
 const CatalogoController = {
 

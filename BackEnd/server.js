@@ -40,7 +40,7 @@ app.use('/api/piedras', piedraRouter);
 app.use('/api/productos', productoRouter);
 app.use('/api/tallas', tallaRouter);
 app.use('/api/producto-talla', ProductoTallaController);
-app.use('/api/catalogo', catalogoRouter);
+app.use('/api/clientes/catalogo', catalogoRouter);
 //app.use('/api/pedidos-especiales', pedidoEspecialRouter);   
 app.use('/api/preguntas', preguntaRouter);   
 

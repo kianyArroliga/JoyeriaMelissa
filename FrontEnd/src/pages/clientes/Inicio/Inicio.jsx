@@ -25,7 +25,7 @@ const Inicio = () => {
   useEffect(() => {
     const obtenerProductos = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api/catalogo/destacados");
+        const res = await axios.get("http://localhost:4000/api/destacados");
         console.log("Productos cargados:", res.data);
         setProductos(res.data);
       } catch (error) {

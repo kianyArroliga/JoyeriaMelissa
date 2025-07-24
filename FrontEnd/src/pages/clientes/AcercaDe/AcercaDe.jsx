@@ -66,7 +66,7 @@ const AcercaDe = () => {
           </a>
           .
         </p>
-        <Link to="/catalogo">
+        <Link to="/clientes/catalogo">
           <button className="w-52 h-10 bg-primeColor text-white hover:bg-black duration-300">
             Ver Catálogo
           </button>

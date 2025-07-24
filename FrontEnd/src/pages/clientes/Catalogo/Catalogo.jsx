@@ -13,7 +13,7 @@ const Catalogo = () => {
   useEffect(() => {
     const obtenerProductos = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api/catalogo/inicio");
+        const res = await axios.get("http://localhost:4000/api/clientes/catalogo/inicio");
         setProductos(res.data);
       } catch (error) {
         console.error("Error al cargar los productos:", error);

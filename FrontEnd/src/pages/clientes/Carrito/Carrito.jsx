@@ -125,7 +125,7 @@ const Carrito = () => {
             <p className="text-sm text-center px-10 -mt-2">
               Dale propósito a tu carrito llenándolo con piezas únicas y hechas a mano de Melissa Aguilar Joyería.
             </p>
-            <Link to="/catalogo">
+            <Link to="/clientes/catalogo">
               <button className="bg-primeColor rounded-md cursor-pointer hover:bg-black active:bg-gray-900 px-8 py-2 font-titleFont font-semibold text-lg text-gray-200 hover:text-white duration-300">
                 Ir al Catálogo
               </button>
