@@ -68,27 +68,27 @@ export const navBarList = [
   {
     _id: 1003,
     title: "Ofertas Especiales",
-    link: "/ofertas-especiales",
+    link: "/clientes/ofertas-especiales",
   },
   {
     _id: 1004,
     title: "Pedido Especial",
-    link: "/pedido-especial",
+    link: "/clientes/pedido-especial",
   },
   {
     _id: 1005,
     title: "FAQ",
-    link: "/faq",
+    link: "/clientes/faq",
   },
   {
     _id: 1006,
     title: "Contacto",
-    link: "/contacto",
+    link: "/clientes/contacto",
   },
   {
     _id: 1007,
     title: "Acerca De",
-    link: "/acerca-de",
+    link: "/clientes/acerca-de",
   },
 ];
 // =================== NavBarList termina aqui ======================
