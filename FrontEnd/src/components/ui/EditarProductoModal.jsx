@@ -6,10 +6,9 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Star, StarOff } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
+import { toast } from "@/hooks/use-toast"
 
 export default function EditarProductoModal({ producto, onCerrar, onProductoActualizado }) {
-
 
     const [form, setForm] = useState({
         ...producto, imagen: null,
@@ -45,7 +44,7 @@ export default function EditarProductoModal({ producto, onCerrar, onProductoActu
                     setTallasSeleccionadas(producto.tallas || []);
                     setStockGeneral(0);
                 } else {
-                    const stock = producto.stock ?? 0; //usa producto.stock
+                    const stock = producto.stock ?? 0; 
                     setStockGeneral(stock);
                     setTallasSeleccionadas([]);
                 }
@@ -95,26 +94,62 @@ export default function EditarProductoModal({ producto, onCerrar, onProductoActu
 
     const handleGuardar = async () => {
         try {
-            if (!form.nombre || !form.precio || !form.descripcion) {
-                alert("Todos los campos son obligatorios");
+            const precioValido = parseFloat(form.precio);
+            const precioEspecialValido = parseFloat(form.precioEspecial);
+
+            if (
+                !form.nombre ||
+                !form.descripcion ||
+                (isNaN(precioValido) && isNaN(precioEspecialValido))
+            ) {
+                toast({
+                    title: "Campos incompletos",
+                    description: "Todos los campos son obligatorios.",
+                    variant: "destructive",
+                    duration: 4000,
+                    className:
+                        "rounded-xl border border-red-300 shadow-md bg-white text-red-700 animate-slide-out-right transition-all duration-300",
+                });
                 return;
             }
+
             const categoriaSeleccionada = categorias.find(
                 (c) => c.idCategoria === form.idCategoria
             );
 
             if (categoriaSeleccionada?.nombre === "Anillos") {
                 if (tallasSeleccionadas.length === 0) {
-                    alert("Debes ingresar al menos una talla con su stock");
+                    toast({
+                        title: "Tallas faltantes",
+                        description: "Debes ingresar al menos una talla con su stock.",
+                        variant: "destructive",
+                        duration: 4000,
+                        className:
+                            "rounded-xl border border-red-300 shadow-md bg-white text-red-700 animate-slide-out-right transition-all duration-300",
+                    });
                     return;
                 }
                 if (tallasSeleccionadas.some((t) => t.stock < 0 || isNaN(t.stock))) {
-                    alert("Verifica que todas las tallas tengan un stock válido");
+                    toast({
+                        title: "Stock inválido",
+                        description: "Verifica que todas las tallas tengan un stock válido.",
+                        variant: "destructive",
+                        duration: 4000,
+                        className:
+                            "rounded-xl border border-red-300 shadow-md bg-white text-red-700 animate-slide-out-right transition-all duration-300",
+                    });
                     return;
                 }
             } else {
                 if (!stockGeneral || stockGeneral < 0) {
-                    alert("Debes ingresar un stock válido para esta categoría");
+                    toast({
+                        title: "Stock faltante",
+                        description: "Debes ingresar un stock válido para esta categoría.",
+                        variant: "destructive",
+                        duration: 4000,
+                        className:
+                            "rounded-xl border border-red-300 shadow-md bg-white text-red-700 animate-slide-out-right transition-all duration-300",
+                    });
                     return;
                 }
             }
@@ -122,13 +157,13 @@ export default function EditarProductoModal({ producto, onCerrar, onProductoActu
             const formData = new FormData();
             formData.append("nombre", form.nombre);
             formData.append("estado", parseInt(form.estado, 10));
-            formData.append("precio", form.precio);
+            formData.append("precio", !isNaN(precioValido) ? precioValido : "");
             formData.append("idCategoria", form.idCategoria);
             formData.append("idPiedra", form.idPiedra);
             formData.append("idMaterial", form.idMaterial);
             formData.append("descripcion", form.descripcion);
             formData.append("stock", stockGeneral);
-            formData.append("precioEspecial", form.precioEspecial !== "" && form.precioEspecial !== undefined ? form.precioEspecial : "");
+            formData.append("precioEspecial", !isNaN(precioEspecialValido) ? precioEspecialValido : "");
             formData.append("destacado", form.destacado ? 1 : 0);
 
 
@@ -146,31 +181,47 @@ export default function EditarProductoModal({ producto, onCerrar, onProductoActu
                 { headers: { "Content-Type": "multipart/form-data" } }
             );
 
-            alert("Producto actualizado correctamente");
+            toast({
+                title: "Actualizado",
+                description: "El producto se actualizó correctamente.",
+                variant: "success", 
+                duration: 4000,
+                className:
+                    "rounded-xl border border-green-300 shadow-md bg-white text-green-700 animate-slide-out-right transition-all duration-300",
+            });
+
             onProductoActualizado();
             onCerrar();
         } catch (error) {
             console.error("Error al actualizar producto:", error);
-            alert("Ocurrió un error al actualizar el producto");
+            toast({
+                title: "Error",
+                description: "Ocurrió un error al actualizar el producto.",
+                variant: "destructive",
+                duration: 4000,
+                className:
+                    "rounded-xl border border-red-300 shadow-md bg-white text-red-700 animate-slide-out-right transition-all duration-300",
+            });
         }
     };
 
-    
 
     return (
 
         <Dialog open onOpenChange={onCerrar}>
             <DialogContent className="max-w-4xl bg-white p-6 rounded-2xl shadow-lg transition-all duration-300">
+                <DialogTitle className="sr-only">Editar Producto</DialogTitle>
+
                 <div className="flex flex-col md:flex-row gap-4 flex-1 justify-start">
-                    {/* Columna izquierda: Formulario */}
+                    {/* Columna izquierda*/}
                     <div
-                        className={`flex-[1.3] grid grid-cols-1 md:grid-cols-2 gap-3 transform translate-y-3 ${categorias.find((c) => c.idCategoria === form.idCategoria)?.nombre === "Anillos" ? "max-h-[600px] overflow-y-auto scrollbar-none" : ""}`} >
+                        className={`flex-[1.3] grid grid-cols-1 md:grid-cols-2 gap-3 transform translate-y-3 ${categorias.find((c) => c.idCategoria === form.idCategoria)?.nombre === "Anillos" ? "max-h-[600px] p-2 overflow-y-auto scrollbar-none" : ""}`} >
 
                         {/* Nombre */}
                         <div className="flex flex-col ">
                             <label className="text-gray-800 font-semibold text-[15px] mb-1">Nombre</label>
                             <div
-                                className="rounded-lg border border-gray-300 focus-within:ring-2 focus-within:ring-[#BAD1C9] focus-within:border-transparent transition duration-200 ease-out"
+                                className="rounded-lg border border-gray-300 focus-within:ring-2 focus-within:ring-[#70B8A2] focus-within:border-transparent transition duration-200 ease-out"
                             >
                                 <Input
                                     name="nombre"
@@ -187,7 +238,7 @@ export default function EditarProductoModal({ producto, onCerrar, onProductoActu
                         <div className="flex flex-col">
                             <label className="text-gray-800 font-semibold text-[15px] mb-1">Precio</label>
                             <div
-                                className="flex items-center rounded-lg border border-gray-300 px-3 py-2 focus-within:ring-2 focus-within:ring-[#BAD1C9] focus-within:border-transparent transition duration-200 ease-out"
+                                className="flex items-center rounded-lg border border-gray-300 px-3 py-2 focus-within:ring-2 focus-within:ring-[#70B8A2] focus-within:border-transparent transition duration-200 ease-out"
                             >
                                 <span className="text-gray-500 mr-2">$</span>
                                 <input
@@ -205,7 +256,7 @@ export default function EditarProductoModal({ producto, onCerrar, onProductoActu
                         <div className="flex flex-col">
                             <label className="text-gray-800 font-semibold text-[15px] mb-1">Precio Especial</label>
                             <div
-                                className="flex items-center rounded-lg border border-gray-300 px-3 py-2 focus-within:ring-2 focus-within:ring-[#BAD1C9] focus-within:border-transparent transition duration-200 ease-out"
+                                className="flex items-center rounded-lg border border-gray-300 px-3 py-2 focus-within:ring-2 focus-within:ring-[#70B8A2] focus-within:border-transparent transition duration-200 ease-out"
                             >
                                 <span className="text-gray-500 mr-2">$</span>
                                 <input
@@ -229,7 +280,7 @@ export default function EditarProductoModal({ producto, onCerrar, onProductoActu
                         <div className="flex flex-col">
                             <label className="text-gray-800 font-semibold text-[15px] mb-1">Estado</label>
                             <div
-                                className="rounded-lg border border-gray-300 focus-within:ring-2 focus-within:ring-[#BAD1C9] focus-within:border-transparent transition duration-200 ease-out"
+                                className="rounded-lg border border-gray-300 focus-within:ring-2 focus-within:ring-[#70B8A2] focus-within:border-transparent transition duration-200 ease-out"
                             >
                                 <Select
                                     value={form.estado.toString()}
@@ -241,19 +292,19 @@ export default function EditarProductoModal({ producto, onCerrar, onProductoActu
                                     }
                                 >
                                     <SelectTrigger
-                                        className="w-full rounded-lg text-[15px] font-normal border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#BAD1C9] focus:border-transparent transition duration-200 ease-out appearance-none"
+                                        className="w-full rounded-lg text-[15px] font-normal border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#70B8A2] focus:border-transparent transition duration-200 ease-out appearance-none"
                                     >
                                         <SelectValue placeholder="Seleccione un estado" />
                                     </SelectTrigger>
                                     <SelectContent className="bg-white border rounded-lg shadow-lg">
                                         <SelectItem
                                             value="1"
-                                            className="flex justify-center items-center hover:bg-gray-100 focus:bg-gray-200 text-[16px] font-medium text-gray-600 rounded-full px-3 py-1 transition-all duration-200"                                    >
+                                            className="flex justify-center items-center hover:bg-gray-100 focus:bg-[#faebd7e5] text-[16px] font-medium text-gray-600 rounded-full px-3 py-1 transition-all duration-200"                                    >
                                             Disponible
                                         </SelectItem>
                                         <SelectItem
                                             value="0"
-                                            className="flex justify-center items-center hover:bg-gray-100 focus:bg-gray-200 text-[16px] font-medium text-gray-600 rounded-full px-3 py-1 transition-all duration-200"                                    >
+                                            className="flex justify-center items-center hover:bg-gray-100 focus:bg-[#faebd7e5] text-[16px] font-medium text-gray-600 rounded-full px-3 py-1 transition-all duration-200"                                    >
                                             No Disponible
                                         </SelectItem>
                                     </SelectContent>
@@ -263,33 +314,44 @@ export default function EditarProductoModal({ producto, onCerrar, onProductoActu
 
                         {/* Destacado */}
                         <div className="flex flex-col">
-                            <label className="text-gray-800 font-semibold text-[15px] mb-1">Destacadar</label>
-                            <button
-                                type="button"
-                                onClick={() =>
-                                    setForm({
-                                        ...form,
-                                        destacado: form.destacado === 1 ? 0 : 1,
-                                    })
-                                }
-                                className="flex items-center justify-center rounded-lg border border-gray-300 px-3 py-2 text-[15px] font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#BAD1C9] focus:border-transparent transition duration-200 ease-out"
+                            <label className="text-gray-800 font-semibold text-[15px] mb-1">
+                                Destacar
+                            </label>
+                            <div
+                                className="rounded-lg border border-gray-300 focus-within:ring-2 focus-within:ring-[#70B8A2] focus-within:border-transparent
+    transition duration-200 ease-out"
                             >
-                                {form.destacado === 1 ? (
-                                    <Star className="w-5 h-5 text-yellow-400" />
-                                ) : (
-                                    <StarOff className="w-5 h-5 text-gray-400" />
-                                )}
-                                <span className="ml-2">
-                                    {form.destacado === 1 ? "Destacado" : "Sin destacar"}
-                                </span>
-                            </button>
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        setForm({
+                                            ...form,
+                                            destacado: form.destacado === 1 ? 0 : 1,
+                                        })
+                                    }
+                                    className="w-full flex justify-center items-center rounded-lg text-[15px] font-normal border-none px-3 py-2
+        focus:outline-none transition duration-200 ease-out"
+                                >
+                                    <div className="flex items-center">
+                                        {form.destacado === 1 ? (
+                                            <Star className="w-5 h-5 text-yellow-400" />
+                                        ) : (
+                                            <StarOff className="w-5 h-5 text-gray-400" />
+                                        )}
+                                        <span className="ml-2">
+                                            {form.destacado === 1 ? "Destacado" : "Sin destacar"}
+                                        </span>
+                                    </div>
+                                </button>
+                            </div>
                         </div>
 
-                        {/* Categoría */}
+
+                        {/* Categoria */}
                         <div className="flex flex-col">
                             <label className="text-gray-800 font-semibold text-[15px] mb-1">Categorías</label>
                             <div
-                                className="rounded-lg border border-gray-300 focus-within:ring-2 focus-within:ring-[#BAD1C9] focus-within:border-transparent transition duration-200 ease-out"
+                                className="rounded-lg border border-gray-300 focus-within:ring-2 focus-within:ring-[#70B8A2] focus-within:border-transparent transition duration-200 ease-out"
                             >
                                 <Select
                                     value={form.idCategoria}
@@ -307,7 +369,7 @@ export default function EditarProductoModal({ producto, onCerrar, onProductoActu
                                             <SelectItem
                                                 key={cat.idCategoria}
                                                 value={cat.idCategoria}
-                                                className="flex justify-center items-center hover:bg-gray-100 focus:bg-gray-200
+                                                className="flex justify-center items-center hover:bg-gray-100 focus:bg-[#faebd7e5]
                           text-[16px] font-medium text-gray-600 rounded-full px-3 py-1 transition-all duration-200"                                        >
                                                 {cat.nombre}
                                             </SelectItem>
@@ -321,7 +383,7 @@ export default function EditarProductoModal({ producto, onCerrar, onProductoActu
                         <div className="flex flex-col">
                             <label className="text-gray-800 font-semibold text-[15px] mb-1">Materiales</label>
                             <div
-                                className="rounded-lg border border-gray-300 focus-within:ring-2 focus-within:ring-[#BAD1C9] focus-within:border-transparent
+                                className="rounded-lg border border-gray-300 focus-within:ring-2 focus-within:ring-[#70B8A2] focus-within:border-transparent
     transition duration-200 ease-out"
                             >
                                 <Select
@@ -342,7 +404,7 @@ export default function EditarProductoModal({ producto, onCerrar, onProductoActu
                                             <SelectItem
                                                 key={mat.idMaterial}
                                                 value={mat.idMaterial}
-                                                className="flex justify-center items-center hover:bg-gray-100 focus:bg-gray-200
+                                                className="flex justify-center items-center hover:bg-gray-100 focus:bg-[#faebd7e5]
                           text-[16px] font-medium text-gray-600 rounded-full px-3 py-1 transition-all duration-200"                                        >
                                                 {mat.nombre}
                                             </SelectItem>
@@ -356,7 +418,7 @@ export default function EditarProductoModal({ producto, onCerrar, onProductoActu
                         <div className="flex flex-col">
                             <label className="text-gray-800 font-semibold text-[15px] mb-1">Piedras</label>
                             <div
-                                className="rounded-lg border border-gray-300 focus-within:ring-2 focus-within:ring-[#BAD1C9] focus-within:border-transparent
+                                className="rounded-lg border border-gray-300 focus-within:ring-2 focus-within:ring-[#70B8A2] focus-within:border-transparent
     transition duration-200 ease-out"
                             >
                                 <Select
@@ -377,7 +439,7 @@ export default function EditarProductoModal({ producto, onCerrar, onProductoActu
                                             <SelectItem
                                                 key={pie.idPiedra}
                                                 value={pie.idPiedra}
-                                                className="flex justify-center items-center hover:bg-gray-100 focus:bg-gray-200
+                                                className="flex justify-center items-center hover:bg-gray-100 focus:bg-[#faebd7e5]
                           text-[16px] font-medium text-gray-600 rounded-full px-3 py-1 transition-all duration-200"                                        >
                                                 {pie.nombre}
                                             </SelectItem>
@@ -387,7 +449,7 @@ export default function EditarProductoModal({ producto, onCerrar, onProductoActu
                             </div>
                         </div>
 
-                        {/* 📏 Tallas o Stock */}
+                        {/* Tallas o Stock */}
                         <div className="md:col-span-2">
                             {categorias.find((c) => c.idCategoria === form.idCategoria)?.nombre === "Anillos" ? (
                                 <>
@@ -412,31 +474,56 @@ export default function EditarProductoModal({ producto, onCerrar, onProductoActu
 
                                                     <div
                                                         className="mt-1 w-full rounded-lg border border-gray-300
-                focus-within:ring-2 focus-within:ring-[#BAD1C9] focus-within:border-transparent
+                focus-within:ring-2 focus-within:ring-[#70B8A2] focus-within:border-transparent
                 transition duration-200 ease-out"
                                                     >
                                                         <input
                                                             type="number"
                                                             min="0"
-                                                            value={seleccionada?.stock || 0}
+                                                            value={
+                                                                seleccionada?.stock !== undefined
+                                                                    ? seleccionada.stock === 0
+                                                                        ? ""
+                                                                        : seleccionada.stock
+                                                                    : ""
+                                                            }
                                                             onChange={(e) => {
-                                                                const stock = parseInt(e.target.value, 10) || 0;
-                                                                setTallasSeleccionadas((prev) => {
-                                                                    const existe = prev.find((t) => t.idTalla === talla.idTalla);
-                                                                    if (existe) {
-                                                                        return prev.map((t) =>
-                                                                            t.idTalla === talla.idTalla ? { ...t, stock } : t
-                                                                        );
-                                                                    } else {
-                                                                        return [...prev, { idTalla: talla.idTalla, stock }];
+                                                                const rawValue = e.target.value;
+
+                                                                if (rawValue === "") {
+                                                                    // Permitir borrar sin forzar a 0
+                                                                    setTallasSeleccionadas((prev) => {
+                                                                        const existe = prev.find((t) => t.idTalla === talla.idTalla);
+                                                                        if (existe) {
+                                                                            return prev.map((t) =>
+                                                                                t.idTalla === talla.idTalla ? { ...t, stock: "" } : t
+                                                                            );
+                                                                        } else {
+                                                                            return [...prev, { idTalla: talla.idTalla, stock: "" }];
+                                                                        }
+                                                                    });
+                                                                } else {
+                                                                    const stock = parseInt(rawValue, 10);
+                                                                    if (!isNaN(stock)) {
+                                                                        setTallasSeleccionadas((prev) => {
+                                                                            const existe = prev.find((t) => t.idTalla === talla.idTalla);
+                                                                            if (existe) {
+                                                                                return prev.map((t) =>
+                                                                                    t.idTalla === talla.idTalla ? { ...t, stock } : t
+                                                                                );
+                                                                            } else {
+                                                                                return [...prev, { idTalla: talla.idTalla, stock }];
+                                                                            }
+                                                                        });
                                                                     }
-                                                                });
+                                                                }
                                                             }}
                                                             className="block text-center w-full rounded-lg text-[14px] px-2 py-1 border-none
-                  focus:outline-none appearance-none
-                  [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+    focus:outline-none appearance-none
+    [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                                             placeholder="0"
                                                         />
+
                                                     </div>
                                                 </div>
                                             );
@@ -451,7 +538,7 @@ export default function EditarProductoModal({ producto, onCerrar, onProductoActu
                                         </label>
                                         <div
                                             className="w-48 mx-auto rounded-lg border border-gray-400
-    focus-within:ring-2 focus-within:ring-[#BAD1C9] focus-within:border-transparent
+    focus-within:ring-2 focus-within:ring-[#70B8A2] focus-within:border-transparent
     transition duration-200 ease-out"
                                         >
                                             <input
@@ -476,11 +563,11 @@ export default function EditarProductoModal({ producto, onCerrar, onProductoActu
                         </div>
 
 
-                        {/* Descripción */}
+                        {/* Descripcion */}
                         <div className="md:col-span-2">
                             <label className="block text-gray-800 font-semibold text-[15px] mb-1">Descripción</label>
                             <div
-                                className="rounded-lg border border-gray-300 focus-within:ring-2 focus-within:ring-[#BAD1C9] focus-within:border-transparent transition duration-200 ease-out"
+                                className="rounded-lg border border-gray-300 focus-within:ring-2 focus-within:ring-[#70B8A2] focus-within:border-transparent transition duration-200 ease-out"
                             >
                                 <Textarea
                                     name="descripcion"
@@ -501,7 +588,7 @@ export default function EditarProductoModal({ producto, onCerrar, onProductoActu
                         <div className="md:col-span-2">
                             <label className="block text-gray-800 font-semibold text-[15px] mb-1">Cambiar Imagen</label>
                             <div
-                                className="rounded-lg border border-gray-300 focus-within:ring-2 focus-within:ring-[#BAD1C9] focus-within:border-transparent transition duration-200 ease-out"
+                                className="rounded-lg border border-gray-300 focus-within:ring-2 focus-within:ring-[#70B8A2] focus-within:border-transparent transition duration-200 ease-out"
                             >
                                 <Input
                                     type="file"
@@ -516,7 +603,7 @@ export default function EditarProductoModal({ producto, onCerrar, onProductoActu
                         </div>
                     </div>
 
-                    {/*Columna derecha: Vista previa */}
+                    {/*Columna derecha */}
                     <div className="flex-[1.1] bg-white p-4 rounded-lg md:mt-11 relative">
 
                         <p className="text-sm text-gray-500 mb-2 font-medium">Vista previa</p>
