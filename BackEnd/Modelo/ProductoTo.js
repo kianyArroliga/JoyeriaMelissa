@@ -13,7 +13,7 @@ const ProductoTo = {
       producto.nombre,
       producto.estado,
       producto.image_url,
-      producto.precio !== null && producto.precio !== "" ? producto.precio : null,
+      producto.precio,
       producto.idCategoria,
       producto.idPiedra,
       producto.idMaterial,
@@ -41,7 +41,7 @@ const ProductoTo = {
   },
 
 
-  // Registrar stock para categorías que no son "Anillos"
+  // Registrar stock general para categorías que no son "Anillos"
   registrarStockGeneral: (idProducto, stock, callback) => {
     const sql = `
         INSERT INTO producto_talla (idTalla, idProducto, stock)
@@ -53,7 +53,7 @@ const ProductoTo = {
     });
   },
 
-  // Actualizar stock  para categorías que no son "Anillos"
+  // Actualizar stock general para categorías que no son "Anillos"
   actualizarStockGeneral: (idProducto, stock, callback) => {
     const sql = `
         UPDATE producto_talla
