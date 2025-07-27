@@ -2,15 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.scrollbar-none {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.scrollbar-none::-webkit-scrollbar {
-  display: none;
-}
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -66,7 +57,6 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
-
   /*Quitar bordes duplicados en Select de Shadcn */
   [data-radix-popper-content-wrapper],
   [data-radix-popper-content-wrapper] * {
@@ -74,7 +64,6 @@
     outline: none !important;
     box-shadow: none !important;
   }
-
   /* Evitar borde negro en inputs y selects nativos */
   input:focus,
   select:focus,
@@ -84,6 +73,13 @@
     box-shadow: none !important;
     border-color: inherit !important;
   }
+  .scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none; /* Firefox */
+}
 
 }
 
@@ -95,33 +91,6 @@
   body {
     @apply bg-background text-foreground;
   }
-}
 
-@layer utilities {
-  @keyframes fade-in-up {
-    0% {
-      opacity: 0;
-      transform: translateY(10px);
-    }
 
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .animate-fade-in-up {
-    animation: fade-in-up 0.3s ease-out forwards;
-  }
-}
-
-@keyframes slideOutRight {
-  to {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-}
-
-.animate-slide-out-right {
-  animation: slideOutRight 0.3s ease-in-out forwards;
 }
