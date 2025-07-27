@@ -85,7 +85,7 @@ const UserController = {
     }
 
     // Validar formato de contraseña
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    const passwordRegex = /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[\W_]).{8,}$/;
     if (!passwordRegex.test(contraseña)) {
       return res.status(400).json({
         error: 'La contraseña debe tener al menos 8 caracteres, incluyendo una mayúscula, una minúscula, un número y un símbolo'
@@ -107,7 +107,7 @@ const UserController = {
       }
 
       if (existe) {
-        console.log('⚠️ Correo ya existe:', correo);
+        console.log('⚠ Correo ya existe:', correo);
         return res.status(409).json({ error: 'El correo ya está registrado' });
       }
 

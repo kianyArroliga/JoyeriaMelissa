@@ -60,7 +60,7 @@ const PerfilUsuario = () => {
   const handleSave = async () => {
     const token = localStorage.getItem("authToken"); // Aquí obtienes el token
 
-    if (!token) {
+    if (!token) { 
       return navigate("/clientes/login");
     }
 
