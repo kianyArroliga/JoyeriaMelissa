@@ -46,7 +46,7 @@ const Login = () => {
                     setMensaje('¡Inicio de sesión exitoso!');
 
                     // Redirigir a la página de perfil
-                    navigate("/perfil"); // Usamos navigate para redirigir
+                    navigate("/clientes/perfil"); // Usamos navigate para redirigir
                 }
             })
             .catch(err => {

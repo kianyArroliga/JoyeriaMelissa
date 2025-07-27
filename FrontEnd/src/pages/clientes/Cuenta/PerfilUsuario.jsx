@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import axios from 'axios';
+import axios from "axios";
+import { logout } from "../../../redux/actions"; // Asegúrate de que esta acción esté importada correctamente
 
 const PerfilUsuario = () => {
   const dispatch = useDispatch();
@@ -11,9 +12,9 @@ const PerfilUsuario = () => {
   // Estado para la edición del perfil
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
-    nombre: '',
-    correo: '',
-    telefono: ''
+    nombre: "",
+    correo: "",
+    telefono: "",
   });
 
   // Verificación de token al cargar el componente
@@ -24,12 +25,18 @@ const PerfilUsuario = () => {
     }
   }, [navigate]);
 
-  // Verificación de usuario
-  console.log(usuario); // Añadir esta línea para depurar
+  // Asegurarse de que los datos del usuario estén disponibles antes de mostrar
+  if (!usuario || usuario.length === 0) {
+    return <div>Cargando perfil...</div>;
+  }
 
-  if (!usuario || !usuario[0]) return <div>Cargando perfil...</div>; // Mostrar algo mientras los datos cargan
-
-  const { nombre = "Usuario", correo = "No disponible", telefono = "No disponible" } = usuario[0] || {};
+  // Desestructurar los datos del usuario
+  const {
+    nombre = "Usuario",
+    correo = "No disponible",
+    telefono = "No disponible",
+    identificacion = "No disponible", // Asegúrate de que identificacion está incluido
+  } = usuario[0] || {};
 
   // Función para manejar la edición del perfil
   const handleEditClick = () => {
@@ -37,7 +44,7 @@ const PerfilUsuario = () => {
     setFormData({
       nombre,
       correo,
-      telefono
+      telefono,
     });
   };
 
@@ -46,13 +53,12 @@ const PerfilUsuario = () => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value
+      [name]: value,
     }));
   };
 
-  // Función para guardar los cambios en el perfil
   const handleSave = async () => {
-    const token = localStorage.getItem("authToken");
+    const token = localStorage.getItem("authToken"); // Aquí obtienes el token
 
     if (!token) {
       return navigate("/clientes/login");
@@ -60,24 +66,24 @@ const PerfilUsuario = () => {
 
     try {
       const response = await axios.put(
-        "http://localhost:3000/api/users/clientes/perfil",
+        "http://localhost:3000/api/users/clientes/perfil", // Verifica que esta URL sea la correcta
+
         formData,
         {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`, // Asegúrate de que se pasa el token correctamente
+          },
         }
       );
 
-      console.log(response.data); // Añadir esta línea para ver la respuesta de la API
+      console.log(response.data);
 
       // Si la actualización es exitosa, actualizamos los datos en Redux y desactivamos la edición
       if (response.data.mensaje === "Perfil actualizado correctamente") {
         setIsEditing(false);
-        // Si deseas actualizar los datos en Redux también:
         dispatch({
           type: "UPDATE_USUARIO",
-          payload: response.data.usuario, // Ajusta según lo que devuelva la API
+          payload: response.data.usuario,
         });
       }
     } catch (error) {
@@ -96,8 +102,9 @@ const PerfilUsuario = () => {
   return (
     <div className="absolute top-20 right-4 bg-white shadow-lg rounded-xl p-4 w-64 z-50">
       <h2 className="text-xl font-semibold mb-2">Bienvenido, {nombre}</h2>
-      <p className="text-sm text-gray-600 mb-4">{correo}</p>
-      <p className="text-sm text-gray-600 mb-4">{telefono}</p>
+      <p className="text-sm text-gray-600 mb-1">Cédula: {identificacion}</p>
+      <p className="text-sm text-gray-600 mb-1">Correo Personal: {correo}</p>
+      <p className="text-sm text-gray-600 mb-4">Teléfono: {telefono}</p>
 
       {isEditing ? (
         <div className="space-y-4">
@@ -131,16 +138,32 @@ const PerfilUsuario = () => {
         </div>
       ) : (
         <ul className="text-gray-700 text-sm flex flex-col gap-2">
-          <li><Link to="/perfil" className="hover:underline">Ver perfil</Link></li>
-          <li><Link to="/mis-pedidos" className="hover:underline">Mis pedidos</Link></li>
-          <li><Link to="/favoritos" className="hover:underline">Favoritos</Link></li>
+          <li>
+            <Link to="/perfil" className="hover:underline">
+              Ver perfil
+            </Link>
+          </li>
+          <li>
+            <Link to="/mis-pedidos" className="hover:underline">
+              Mis pedidos
+            </Link>
+          </li>
+          <li>
+            <Link to="/favoritos" className="hover:underline">
+              Favoritos
+            </Link>
+          </li>
           <li>
             <button onClick={handleEditClick} className="hover:underline text-blue-600">
               Editar perfil
             </button>
           </li>
           <li>
-            <button onClick={handleLogout} className="text-red-500 hover:underline" aria-label="Cerrar sesión">
+            <button
+              onClick={handleLogout}
+              className="text-red-500 hover:underline"
+              aria-label="Cerrar sesión"
+            >
               Cerrar sesión
             </button>
           </li>

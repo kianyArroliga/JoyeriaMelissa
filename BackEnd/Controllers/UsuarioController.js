@@ -1,4 +1,3 @@
-// backend/Controllers/UsuarioController.js
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const UserModel = require('../Modelo/UsuarioTo');
@@ -144,35 +143,35 @@ const UserController = {
     });
   },
 
-  // Ver perfil del usuario por el id (con validación JWT)
-  verPerfil: (req, res) => {
-    const token = req.headers.authorization?.split(" ")[1]; // Obtener token del header
+// Ver perfil del usuario por el id (con validación JWT)
+verPerfil: (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1]; // Obtener token del header
 
-    if (!token) {
-      return res.status(401).json({ error: 'Token no proporcionado' });
+  if (!token) {
+    return res.status(401).json({ error: 'Token no proporcionado' });
+  }
+
+  jwt.verify(token, JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: 'Token no válido' });
     }
 
-    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+    const idUsuario = decoded.id; // Obtener el id del usuario desde el token
+
+    // Obtener el perfil del usuario
+    UserModel.buscarUsuarioPorId(idUsuario, (err, data) => {
       if (err) {
-        return res.status(401).json({ error: 'Token no válido' });
+        return res.status(500).json({ error: 'Error interno del servidor' });
       }
 
-      const idUsuario = decoded.id; // Obtener el id del usuario desde el token
+      if (data.length === 0) {
+        return res.status(404).json({ error: 'Usuario no encontrado' });
+      }
 
-      // Obtener el perfil del usuario
-      UserModel.buscarUsuarioPorId(idUsuario, (err, data) => {
-        if (err) {
-          return res.status(500).json({ error: 'Error interno del servidor' });
-        }
-
-        if (data.length === 0) {
-          return res.status(404).json({ error: 'Usuario no encontrado' });
-        }
-
-        res.json(data[0]); // Devolver el perfil del usuario
-      });
+      res.json(data[0]); // Devolver el perfil del usuario
     });
-  },
+  });
+},
 
   // Actualizar perfil del usuario (con validación JWT)
   actualizarPerfilUsuario: (req, res) => {
