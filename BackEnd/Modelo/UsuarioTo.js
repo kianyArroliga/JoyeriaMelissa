@@ -3,7 +3,7 @@ const db = require('../Config/Database');
 const UserModel = {
     buscarUsuarioPorCorreo: (correo, callback) => {
         
-        const sql = "SELECT idUsuario, identificacion, nombre, apellido, correo, telefono, contraseña, estado, suscrito FROM usuario WHERE correo = ?";
+        const sql = "SELECT idUsuario, identificacion, nombre, apellido, correo, telefono, contraseña, estado, idRol, suscrito FROM usuario WHERE correo = ?";
         db.query(sql, [correo], (err, data) => {
             if (err) {
                 console.error('Error en buscarUsuarioPorCorreo:', err);

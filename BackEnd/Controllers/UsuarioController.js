@@ -60,7 +60,7 @@ const UserController = {
             correo: usuario.correo,
             rol: usuario.idRol, //necesario porque vamos a estar manejando distintos tipos usuarios
           },
-          SECRET,
+          JWT_SECRET,
           { expiresIn: '2h' }
         );
 
