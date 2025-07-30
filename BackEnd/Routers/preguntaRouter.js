@@ -8,10 +8,10 @@ router.post('/agregarPregunta', PreguntasController.agregarPregunta);
 //Listar todas las preguntas
 router.get('/preguntas', PreguntasController.listarTodos);
 // Actualizar una pregunta
-router.get('/editarPregunta/:idPregunta', PreguntasController.listarPreguntaPorId);
 router.put('/editarPregunta/:idPregunta', PreguntasController.editarPregunta);
+router.get('/editarPregunta/:idPregunta', PreguntasController.listarPreguntaPorId);
 //Eliminar una pregunta
 router.delete('/borrarPregunta/:idPregunta', PreguntasController.eliminarPregunta);
- 
- 
+
+
 module.exports = router

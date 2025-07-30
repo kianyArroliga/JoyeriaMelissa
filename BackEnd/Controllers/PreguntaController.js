@@ -82,27 +82,31 @@ const PreguntasController = {
     editarPregunta: async (req, res) => {
         try {
             const { idPregunta } = req.params;
-            const { pregunta, respuesta, visible } = req.body;
+            let { pregunta, respuesta, visible } = req.body;
 
-            console.log("Datos recibidos en el body:", req.body);
+            const visibilidad = visible === "1" || visible === 1 || visible === true ? 1 : 0;
 
-            PreguntaTo.buscarPregunta(idPregunta, (err, preguntaExistente) => {
+            PreguntaTo.buscarPregunta(idPregunta, (err, resultado) => {
                 if (err) {
                     console.error("Error al buscar la pregunta:", err);
                     return res.status(500).json({ error: "Error al buscar la pregunta" });
                 }
 
-                if (!preguntaExistente || preguntaExistente.length === 0) {
+                if (!resultado || resultado.length === 0) {
                     console.warn(`Pregunta con ID ${idPregunta} no encontrada`);
                     return res.status(404).json({ error: "Pregunta no encontrada" });
                 }
 
+                const existente = resultado[0];
+
                 const datosActualizados = {
-                    pregunta: pregunta?.trim() || preguntaExistente.pregunta,
-                    respuesta: respuesta?.trim() || preguntaExistente.respuesta,
-                    visible: typeof visible !== 'undefined' ? visible : preguntaExistente.visible,
+                    pregunta: pregunta?.trim() || existente.pregunta,
+                    respuesta: respuesta?.trim() || existente.respuesta,
+                    visible: typeof visible !== 'undefined' ? visibilidad : existente.visible,
                     idPregunta: idPregunta
                 };
+
+                console.log("Datos actualizados:", datosActualizados);
 
                 PreguntaTo.actualizarPregunta(datosActualizados, (err) => {
                     if (err) {
@@ -119,6 +123,7 @@ const PreguntasController = {
             return res.status(500).json({ error: "Error interno al actualizar la pregunta" });
         }
     }
+
 
 };
 

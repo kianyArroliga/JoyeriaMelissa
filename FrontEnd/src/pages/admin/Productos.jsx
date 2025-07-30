@@ -21,7 +21,8 @@ export default function Productos() {
   const [tallasSeleccionadas, setTallasSeleccionadas] = useState([]);
   const [stockGeneral, setStockGeneral] = useState("");
   const [busqueda, setBusqueda] = useState("");
-  
+  const [visibleCounts, setVisibleCounts] = useState([4, 4, 4]);
+
 
   const [nuevoProducto, setNuevoProducto] = useState({
     nombre: "",
@@ -316,7 +317,6 @@ export default function Productos() {
                   </div>
                 </div>
 
-
                 {/* Precio Especial */}
                 <div className="flex flex-col">
                   <label className="text-gray-800 font-semibold text-base mb-1">Precio Especial</label>
@@ -343,7 +343,6 @@ export default function Productos() {
                     />
                   </div>
                 </div>
-
 
                 {/* Estado */}
                 <div className="flex flex-col">
@@ -382,7 +381,6 @@ export default function Productos() {
                     </SelectContent>
                   </Select>
                 </div>
-
 
                 {/* Destacado */}
                 <div className="flex flex-col">

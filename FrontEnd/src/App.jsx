@@ -32,6 +32,7 @@ import Carrito from "./pages/clientes/Carrito/Carrito";
 import DetallesProducto from "./pages/clientes/DetallesProducto/DetallesProducto";
 import Login from "./pages/clientes/Cuenta/Login";
 import Registro from "./pages/clientes/Cuenta/Registro";
+import Registro from "./pages/clientes/Cuenta/Registro";
 import PerfilUsuario from "./pages/clientes/Cuenta/PerfilUsuario";
  
 // Páginas admin
@@ -40,7 +41,8 @@ import Productos from "./pages/admin/Productos";
 import Cuentas from "./pages/admin/Cuentas";
 import Stock from "./pages/admin/Stock";
 import Pedidos from "./pages/admin/Pedidos";
- 
+import AdPedidoEspecial from "./pages/admin/AdPedidoEspecial";
+import PreguntasFrecuentes from "./pages/admin/PreguntasFrecuentes";
 // Layout para los clientes
 const LayoutCliente = () => (
   <div>
@@ -89,6 +91,8 @@ const router = createBrowserRouter(
         <Route path="/admin/cuentas" element={<Cuentas />} />
         <Route path="/admin/stock" element={<Stock />} />
         <Route path="/admin/pedidos" element={<Pedidos />} />
+        <Route path="/admin/adpedido-especial" element={<AdPedidoEspecial />} />
+        <Route path="/admin/preguntas-frecuentes" element={<PreguntasFrecuentes />} />
       </Route>
  
       <Route element={<RutaProtegida rolPermitido={[2, 3]} />}> {/* Admin y manager */}

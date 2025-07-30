@@ -95,8 +95,22 @@ export default function EditarProductoModal({ producto, onCerrar, onProductoActu
 
     const handleGuardar = async () => {
         try {
-            if (!form.nombre || !form.precio || !form.descripcion) {
-                alert("Todos los campos son obligatorios");
+            const precioValido = parseFloat(form.precio);
+            const precioEspecialValido = parseFloat(form.precioEspecial);
+
+            if (
+                !form.nombre ||
+                !form.descripcion ||
+                (isNaN(precioValido) && isNaN(precioEspecialValido))
+            ) {
+                toast({
+                    title: "Campos incompletos",
+                    description: "Todos los campos son obligatorios.",
+                    variant: "destructive", // rojo
+                    duration: 4000,
+                    className:
+                        "rounded-xl border border-red-300 shadow-md bg-white text-red-700 animate-slide-out-right transition-all duration-300",
+                });
                 return;
             }
             const categoriaSeleccionada = categorias.find(
@@ -146,7 +160,15 @@ export default function EditarProductoModal({ producto, onCerrar, onProductoActu
                 { headers: { "Content-Type": "multipart/form-data" } }
             );
 
-            alert("Producto actualizado correctamente");
+            toast({
+                title: "Actualizado",
+                description: "El producto se actualizó correctamente.",
+                variant: "success", // verde
+                duration: 4000,
+                className:
+                    "rounded-xl border border-green-300 shadow-md bg-white text-green-700 animate-slide-out-right transition-all duration-300",
+            });
+
             onProductoActualizado();
             onCerrar();
         } catch (error) {
@@ -284,6 +306,7 @@ export default function EditarProductoModal({ producto, onCerrar, onProductoActu
                                 </span>
                             </button>
                         </div>
+
 
                         {/* Categoría */}
                         <div className="flex flex-col">

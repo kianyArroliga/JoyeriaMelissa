@@ -22,12 +22,12 @@ const PreguntaTo = {
     },
 
     //Lista por uno en especifico (para admin)
-    buscarPregunta: (idProducto, callback) => {
+    buscarPregunta: (idPregunta, callback) => {
         const sql = `
       SELECT * FROM preguntas_frecuentes
       WHERE idPregunta = ?
     `;
-        db.query(sql, [idUsuario], (err, results) => {
+        db.query(sql, [idPregunta], (err, results) => {
             if (err) return callback(err, null);
             callback(null, results);
         });
@@ -46,13 +46,13 @@ const PreguntaTo = {
     },
 
     //Solo lista las preguntas visibles (para clientes)
-    listarVisibles: (idPregunta, callback) => {
+    listarVisibles: (callback) => {
         const sql = `
     SELECT * FROM preguntas_frecuentes
     WHERE visible = 1
     ORDER BY fechaCreacion DESC
     `;
-        db.query(sql, [idPregunta], (err, results) => {
+        db.query(sql, (err, results) => {
             if (err) return callback(err, null);
             callback(null, results);
         });
