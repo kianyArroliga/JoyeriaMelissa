@@ -1,23 +1,33 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Breadcrumbs from "@/components/ui/pageProps/Breadcrumbs";
-import { vaciarCarrito } from "@/redux/carritoSlice";
 import { emptyCart } from "@/assets/images";
 import ItemCard from "@/pages/clientes/Carrito/itemCarrito";
-
+import axios from "axios";
 
 const Carrito = () => {
-  const dispatch = useDispatch();
-  const productos = useSelector((state) => state.carrito?.productos ?? [].products);
+  const [productos, setProductos] = useState([]);
   const [total, setTotal] = useState(0);
   const [envio, setEnvio] = useState(0);
 
   useEffect(() => {
+    const cargarCarrito = async () => {
+      try {
+        const res = await axios.get("http://localhost:4000/detalle_pedido");
+        setProductos(res.data);
+      } catch (err) {
+        console.error("Error cargando carrito:", err);
+      }
+    };
+
+    cargarCarrito();
+  }, []);
+
+  useEffect(() => {
     let precio = 0;
     productos.forEach((item) => {
-      precio += item.price * item.quantity;
+      precio += item.precioUnitario * item.cantidad;
     });
     setTotal(precio);
   }, [productos]);
@@ -31,6 +41,15 @@ const Carrito = () => {
       setEnvio(20);
     }
   }, [total]);
+
+  const vaciarCarritoLocal = async () => {
+    try {
+      await axios.delete("http://localhost:4000/detalle_pedido/expirar");
+      setProductos([]);
+    } catch (err) {
+      console.error("Error al vaciar carrito:", err);
+    }
+  };
 
   return (
     <div className="max-w-container mx-auto px-4">
@@ -46,14 +65,14 @@ const Carrito = () => {
 
           <div className="mt-5">
             {productos.map((item) => (
-              <div key={item._id}>
+              <div key={item.idDetallePedido}>
                 <ItemCard item={item} />
               </div>
             ))}
           </div>
 
           <button
-            onClick={() => dispatch(vaciarCarrito())}
+            onClick={vaciarCarritoLocal}
             className="py-2 px-10 bg-red-500 text-white font-semibold uppercase mb-4 hover:bg-red-700 duration-300"
           >
             Vaciar carrito
@@ -77,15 +96,11 @@ const Carrito = () => {
               <div>
                 <p className="flex items-center justify-between border-[1px] border-gray-400 border-b-0 py-1.5 text-lg px-4 font-medium">
                   Subtotal
-                  <span className="font-semibold tracking-wide font-titleFont">
-                    ${total}
-                  </span>
+                  <span className="font-semibold tracking-wide font-titleFont">${total}</span>
                 </p>
                 <p className="flex items-center justify-between border-[1px] border-gray-400 border-b-0 py-1.5 text-lg px-4 font-medium">
                   Envío
-                  <span className="font-semibold tracking-wide font-titleFont">
-                    ${envio}
-                  </span>
+                  <span className="font-semibold tracking-wide font-titleFont">${envio}</span>
                 </p>
                 <p className="flex items-center justify-between border-[1px] border-gray-400 py-1.5 text-lg px-4 font-medium">
                   Total
@@ -112,11 +127,7 @@ const Carrito = () => {
           className="flex flex-col mdl:flex-row justify-center items-center gap-4 pb-20"
         >
           <div>
-            <img
-              className="w-80 rounded-lg p-4 mx-auto"
-              src={emptyCart}
-              alt="Carrito vacío"
-            />
+            <img className="w-80 rounded-lg p-4 mx-auto" src={emptyCart} alt="Carrito vacío" />
           </div>
           <div className="max-w-[500px] p-4 py-8 bg-white flex gap-4 flex-col items-center rounded-md shadow-lg">
             <h1 className="font-titleFont text-xl font-bold uppercase">
