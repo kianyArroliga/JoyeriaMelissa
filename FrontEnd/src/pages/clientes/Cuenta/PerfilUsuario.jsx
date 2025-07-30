@@ -2,110 +2,106 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { logout } from "../../../redux/actions"; // Asegúrate de que esta acción esté importada correctamente
-
+import { setLogin, logout } from "../../../redux/autenticadorSlice";
+ 
 const PerfilUsuario = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const usuario = useSelector((state) => state.carrito.usuarioInfo);
-
-  // Estado para la edición del perfil
+  const { usuario } = useSelector((state) => state.auth);
+ 
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     nombre: "",
     correo: "",
     telefono: "",
   });
-
-  // Verificación de token al cargar el componente
+ 
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
+    const token = localStorage.getItem("token");
+ 
     if (!token) {
-      navigate("/clientes/login"); // Redirigir a inicio si no hay token
+      navigate("/clientes/login");
+      return;
     }
-  }, [navigate]);
-
-  // Asegurarse de que los datos del usuario estén disponibles antes de mostrar
-  if (!usuario || usuario.length === 0) {
+ 
+    if (!usuario) {
+      const fetchPerfil = async () => {
+        try {
+          const response = await axios.get("http://localhost:4000/api/users/clientes/perfil", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+ 
+          console.log("Perfil recibido:", response.data.usuario);
+ 
+          dispatch(setLogin({ usuario: response.data.usuario, token }));
+        } catch (error) {
+          console.error("Error al obtener el perfil:", error);
+          navigate("/clientes/login");
+        }
+      };
+ 
+      fetchPerfil();
+    }
+  }, [usuario, dispatch, navigate]);
+ 
+  if (!usuario) {
     return <div>Cargando perfil...</div>;
   }
-
-  // Desestructurar los datos del usuario
+ 
   const {
     nombre = "Usuario",
     correo = "No disponible",
     telefono = "No disponible",
-    identificacion = "No disponible", // Asegúrate de que identificacion está incluido
-  } = usuario[0] || {};
-
-  // Función para manejar la edición del perfil
+    identificacion = "No disponible",
+  } = usuario;
+ 
   const handleEditClick = () => {
     setIsEditing(true);
-    setFormData({
-      nombre,
-      correo,
-      telefono,
-    });
+    setFormData({ nombre, correo, telefono });
   };
-
-  // Función para manejar los cambios en el formulario de edición
+ 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
-
+ 
   const handleSave = async () => {
-    const token = localStorage.getItem("authToken"); // Aquí obtienes el token
-
-    if (!token) { 
+    const token = localStorage.getItem("token");
+ 
+    if (!token) {
       return navigate("/clientes/login");
     }
-
+ 
     try {
       const response = await axios.put(
-        "http://localhost:3000/api/users/clientes/perfil", // Verifica que esta URL sea la correcta
-
+        "http://localhost:4000/api/users/clientes/perfil",
         formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, // Asegúrate de que se pasa el token correctamente
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-
-      console.log(response.data);
-
-      // Si la actualización es exitosa, actualizamos los datos en Redux y desactivamos la edición
+ 
       if (response.data.mensaje === "Perfil actualizado correctamente") {
         setIsEditing(false);
-        dispatch({
-          type: "UPDATE_USUARIO",
-          payload: response.data.usuario,
-        });
+        dispatch(setLogin({ usuario: response.data.usuario, token }));
       }
     } catch (error) {
       console.error("Error al actualizar el perfil:", error);
     }
   };
-
-  // Función para cerrar sesión
+ 
   const handleLogout = () => {
-    dispatch(logout()); // Acción de Redux para limpiar el estado global
-    localStorage.removeItem("user"); // Eliminar usuario de localStorage
-    localStorage.removeItem("authToken"); // Eliminar el token de localStorage
-    navigate("/inicio"); // Redirigir a inicio después de cerrar sesión
+    dispatch(logout());
+    localStorage.removeItem("token");
+    localStorage.removeItem("usuario");
+    navigate("/clientes/login");
   };
-
+ 
   return (
     <div className="absolute top-20 right-4 bg-white shadow-lg rounded-xl p-4 w-64 z-50">
       <h2 className="text-xl font-semibold mb-2">Bienvenido, {nombre}</h2>
       <p className="text-sm text-gray-600 mb-1">Cédula: {identificacion}</p>
-      <p className="text-sm text-gray-600 mb-1">Correo Personal: {correo}</p>
+      <p className="text-sm text-gray-600 mb-1">Correo: {correo}</p>
       <p className="text-sm text-gray-600 mb-4">Teléfono: {telefono}</p>
-
+ 
       {isEditing ? (
         <div className="space-y-4">
           <input
@@ -162,7 +158,6 @@ const PerfilUsuario = () => {
             <button
               onClick={handleLogout}
               className="text-red-500 hover:underline"
-              aria-label="Cerrar sesión"
             >
               Cerrar sesión
             </button>
@@ -172,5 +167,5 @@ const PerfilUsuario = () => {
     </div>
   );
 };
-
+ 
 export default PerfilUsuario;

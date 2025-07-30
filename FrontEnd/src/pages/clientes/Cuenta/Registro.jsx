@@ -20,18 +20,19 @@ const Register = () => {
     }, []);
 
     const [form, setForm] = useState({
+        identificacion: '',
         nombre: '',
         apellido: '',
         correo: '',
         telefono: '',
-        contraseña: ''
+        contrasena: ''  
     });
 
     const [showPassword, setShowPassword] = useState(false);
     const [mensaje, setMensaje] = useState('');
     const [error, setError] = useState('');
 
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    const passwordRegex = /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[\W_]).{8,}$/;
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -43,24 +44,66 @@ const Register = () => {
         setMensaje('');
         setError('');
 
-        if (!passwordRegex.test(form.contraseña)) {
+        console.log('Datos del formulario:', form);
+        
+        // Verificar que todos los campos estén llenos
+        const camposVacios = Object.entries(form).filter(([key, value]) => !value || value.trim() === '');
+        if (camposVacios.length > 0) {
+            setError('Los siguientes campos están vacíos: ${camposVacios.map(([key]) => key).join(', ')}');
+            return;
+        }
+
+        if (!passwordRegex.test(form.contrasena)) {
             setError(
                 'La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial.'
             );
             return;
         }
 
-        if (form.contraseña === 'Clave123@') {
+        if (form.contrasena === 'Clave123@') {
             setError('Esa contraseña es muy común. Por seguridad, escoge una diferente.');
             return;
         }
 
         try {
-            const res = await axios.post('http://localhost:4000/api/users/register', form);
+            // Preparar datos para enviar - el backend espera 'contraseña' con ñ
+            const dataToSend = {
+                identificacion: form.identificacion.trim(),
+                nombre: form.nombre.trim(),
+                apellido: form.apellido.trim(),
+                correo: form.correo.trim(),
+                telefono: form.telefono.trim(),
+                contrasena: form.contrasena  // Enviar con ñ
+            };
+
+            console.log('Datos a enviar:', dataToSend);
+
+            const res = await axios.post('http://localhost:4000/api/users/register', dataToSend, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
             setMensaje(res.data.mensaje);
+            
+            // Limpiar formulario después del registro exitoso
+            setForm({
+                identificacion: '',
+                nombre: '',
+                apellido: '',
+                correo: '',
+                telefono: '',
+                contrasena: ''
+            });
+            
         } catch (err) {
-            const mensajeError = err.response?.data?.error || 'Error al registrar usuario';
-            setError(mensajeError);
+            if (err.response) {
+                console.log("Error del servidor:", err.response.data);
+                setError(err.response.data?.error || 'Error al registrar usuario');
+            } else {
+                console.log("Error sin respuesta del servidor:", err);
+                setError('No se pudo conectar con el servidor');
+            }
         }
     };
 
@@ -80,6 +123,17 @@ const Register = () => {
                     </p>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
+
+                        <input
+                            type="text"
+                            name="identificacion"
+                            placeholder="Identificación"
+                            value={form.identificacion}
+                            onChange={handleChange}
+                            required
+                            className="w-full border-b border-[#CED1C0] focus:outline-none focus:border-[#8C162A] py-2"
+                        />
+
                         <input
                             type="text"
                             name="nombre"
@@ -121,9 +175,9 @@ const Register = () => {
                         <div className="relative">
                             <input
                                 type={showPassword ? 'text' : 'password'}
-                                name="contraseña"
+                                name="contrasena"
                                 placeholder="Contraseña"
-                                value={form.contraseña}
+                                value={form.contrasena}
                                 onChange={handleChange}
                                 required
                                 className="w-full border-b border-[#CED1C0] focus:outline-none focus:border-[#8C162A] py-2 pr-10"
@@ -140,9 +194,13 @@ const Register = () => {
                             La contraseña debe tener mínimo 8 caracteres, una mayúscula, una minúscula, un número y un carácter especial. Ej: <strong>Clave123@</strong>.
                         </p>
 
-                        <button className="bg-[#8C162A] hover:bg-[#660022] transition-colors text-white px-4 py-2 rounded-md w-full">
+                        <button 
+                            type="submit"
+                            className="bg-[#8C162A] hover:bg-[#660022] transition-colors text-white px-4 py-2 rounded-md w-full"
+                        >
                             Registrarse
                         </button>
+                        
                         {mensaje && <p className="text-green-600 font-medium">{mensaje}</p>}
                         {error && <p className="text-red-600 font-medium">{error}</p>}
                     </form>

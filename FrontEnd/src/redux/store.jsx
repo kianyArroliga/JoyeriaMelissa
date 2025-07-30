@@ -10,18 +10,24 @@ import {
   REGISTER,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
+ 
 import carritoReducer from "./carritoSlice";
-
-const configuracionPersistencia = {
-  key: "root",
-  version: 1,
+import authReducer from "./autenticadorSlice";
+ 
+// Persistencia específica para el auth
+const persistConfigAuth = {
+  key: "auth",
   storage,
+  version: 1,
 };
-
-const reducerPersistente = persistReducer(configuracionPersistencia, carritoReducer);
-
+ 
+const authPersistedReducer = persistReducer(persistConfigAuth, authReducer);
+ 
 export const store = configureStore({
-  reducer: { carrito: reducerPersistente },
+  reducer: {
+    auth: authPersistedReducer,
+    carrito: carritoReducer,
+  },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
@@ -29,5 +35,5 @@ export const store = configureStore({
       },
     }),
 });
-
-export let persistor = persistStore(store);
+ 
+export const persistor = persistStore(store);

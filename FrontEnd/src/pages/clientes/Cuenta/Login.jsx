@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { setLogin } from '../../../redux/autenticadorSlice';
+import { useDispatch } from 'react-redux';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -11,6 +13,7 @@ const Login = () => {
     const [mensaje, setMensaje] = useState('');
     const [tipoMensaje, setTipoMensaje] = useState('');
     const navigate = useNavigate(); // Usamos useNavigate para redirigir al perfil después del login exitoso
+    const dispatch = useDispatch();
 
     useEffect(() => {
         // Cambiar el título de la pestaña
@@ -26,6 +29,15 @@ const Login = () => {
             newLink.href = '/FotosMAJ/Logo/faviconMAJ.ico';
             document.head.appendChild(newLink);
         }
+
+        const token = localStorage.getItem("token");
+        const usuario = JSON.parse(localStorage.getItem("usuario"));
+        if (token && usuario) {
+            const rol = usuario.rol || usuario.idRol;
+            if (rol === 2) navigate("/admin");
+            else if (rol === 3) navigate("/manager");
+            else navigate("/clientes/perfil");
+        }
     }, []);
 
     const handleSubmit = (e) => {
@@ -33,26 +45,40 @@ const Login = () => {
         setMensaje('');
         setTipoMensaje('');
 
+        // AGREGADO: Debug para verificar datos
+        console.log('Datos a enviar:', { correo: email, contrasena: password ? '***' : 'undefined' });
+
         axios.post('http://localhost:4000/api/users/clientes/login', {
             correo: email,
-            contraseña: password
+            contrasena: password  // CORREGIDO: cambié 'contraseña' por 'contrasena' (sin ñ)
         })
             .then(res => {
                 // Si el login es exitoso, obtenemos el token
                 if (res.data.token) {
-                    // Guardamos el token JWT en el localStorage
-                    localStorage.setItem("authToken", res.data.token);
+                    const token = res.data.token;
+                    const usuario = res.data.usuario;
+
+                    //Con esto se guardaría en el redux
+                    dispatch(setLogin({ token, usuario }));
+
+                    //aki se guarda el token en el localStorage
+                    localStorage.setItem("token", token);
+                    localStorage.setItem("usuario", JSON.stringify(usuario));
+
                     setTipoMensaje('exito');
                     setMensaje('¡Inicio de sesión exitoso!');
 
-                    // Redirigir a la página de perfil
-                    navigate("/clientes/perfil"); // Usamos navigate para redirigir
+                    const rol = usuario.rol || usuario.idRol;
+
                 }
             })
             .catch(err => {
+                console.error('Error en login:', err.response?.data || err.message);
                 setTipoMensaje('error');
                 if (err.response?.status === 401) {
                     setMensaje('Correo o contraseña incorrectos.');
+                } else if (err.response?.status === 500) {
+                    setMensaje('Error interno del servidor. Inténtalo de nuevo.');
                 } else {
                     setMensaje('Ocurrió un error al intentar iniciar sesión.');
                 }
@@ -76,11 +102,10 @@ const Login = () => {
 
                     {/* Mensaje visual */}
                     {mensaje && (
-                        <div className={`mb-4 p-3 rounded-md text-sm ${
-                            tipoMensaje === 'exito'
-                                ? 'bg-green-100 text-green-700 border border-green-300'
-                                : 'bg-red-100 text-red-700 border border-red-300'
-                        }`}>
+                        <div className={`mb-4 p-3 rounded-md text-sm ${tipoMensaje === 'exito'
+                            ? 'bg-green-100 text-green-700 border border-green-300'
+                            : 'bg-red-100 text-red-700 border border-red-300'
+                            }`}>
                             {mensaje}
                         </div>
                     )}

@@ -7,17 +7,18 @@ import {
   ScrollRestoration,
   Navigate,
 } from "react-router-dom";
-
+ 
 import Header from "./components/ui/home/Header/Header";
 import HeaderBottom from "./components/ui/home/Header/HeaderBottom";
 import Footer from "./components/ui/home/Footer/Footer";
 import FooterBottom from "./components/ui/home/Footer/FooterBottom";
 import SpecialCase from "./components/ui/SpecialCase/SpecialCase";
 import ErrorPage from "./components/ui/ErrorPage/ErrorPage";
-
+import RutaProtegida from "./components/Rutas/RutaProtegida";
+ 
 //import "slick-carousel/slick/slick.css";
 //import "slick-carousel/slick/slick-theme.css";
-
+ 
 // Páginas cliente
 import Inicio from "./pages/clientes/Inicio/Inicio";
 import Catalogo from "./pages/clientes/Catalogo/Catalogo";
@@ -30,16 +31,16 @@ import Pago from "./pages/clientes/Pago/Pago";
 import Carrito from "./pages/clientes/Carrito/Carrito";
 import DetallesProducto from "./pages/clientes/DetallesProducto/DetallesProducto";
 import Login from "./pages/clientes/Cuenta/Login";
-import Registro from "./pages/clientes/Cuenta/Registro"; 
+import Registro from "./pages/clientes/Cuenta/Registro";
 import PerfilUsuario from "./pages/clientes/Cuenta/PerfilUsuario";
-
+ 
 // Páginas admin
 import DashboardAdmin from "./pages/admin/DashboardAdmin";
 import Productos from "./pages/admin/Productos";
 import Cuentas from "./pages/admin/Cuentas";
 import Stock from "./pages/admin/Stock";
 import Pedidos from "./pages/admin/Pedidos";
-
+ 
 // Layout para los clientes
 const LayoutCliente = () => (
   <div>
@@ -52,14 +53,14 @@ const LayoutCliente = () => (
     <FooterBottom />
   </div>
 );
-
+ 
 // Enrutador
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       {/* Redirección raíz */}
       <Route path="/" element={<Navigate to="/clientes" />} />
-
+ 
       {/* Rutas cliente */}
       <Route path="/clientes" element={<LayoutCliente />} errorElement={<ErrorPage />}>
         <Route index element={<Inicio />} />
@@ -76,17 +77,27 @@ const router = createBrowserRouter(
         <Route path="registro" element={<Registro />} />
         <Route path="perfil" element={<PerfilUsuario />} />
       </Route>
-
-      {/* Rutas admin */}
-      <Route path="/admin" element={<DashboardAdmin />} errorElement={<ErrorPage />} />
-      <Route path="/admin/productos" element={<Productos />} />
-      <Route path="/admin/cuentas" element={<Cuentas />} />
-      <Route path="/admin/stock" element={<Stock />} />
-      <Route path="/admin/pedidos" element={<Pedidos />} />
+ 
+//Para que no se metan a perfil sin login, aqui habría que poner las de pago y así, supongo.
+      <Route element={<RutaProtegida rolPermitido={1} />}>
+        <Route path="perfil" element={<PerfilUsuario />} />
+      </Route>
+ 
+      {/* Rutas admin protegidas */}
+      <Route element={<RutaProtegida rolPermitido={2} />}>
+        <Route path="/admin" element={<DashboardAdmin />} />
+        <Route path="/admin/cuentas" element={<Cuentas />} />
+        <Route path="/admin/stock" element={<Stock />} />
+        <Route path="/admin/pedidos" element={<Pedidos />} />
+      </Route>
+ 
+      <Route element={<RutaProtegida rolPermitido={[2, 3]} />}> {/* Admin y manager */}
+        <Route path="/admin/productos" element={<Productos />} />
+      </Route>
     </>
   )
 );
-
+ 
 // App principal
 function App() {
   return (
@@ -95,5 +106,5 @@ function App() {
     </div>
   );
 }
-
+ 
 export default App;
