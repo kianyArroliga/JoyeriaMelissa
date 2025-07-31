@@ -10,6 +10,7 @@ const Catalogo = () => {
   const [itemsPorPagina, setItemsPorPagina] = useState(12);
   const [productos, setProductos] = useState([]);
   const [filtros, setFiltros] = useState({});
+  const [busqueda, setBusqueda] = useState("");
 
   // Hook que se activa cuando se cambian los filtros
   useEffect(() => {
@@ -45,24 +46,49 @@ const Catalogo = () => {
         <div className="w-[20%] lgl:w-[25%] md:block h-full">
           <FiltrosCatalogo onFilterChange={manejarFiltros} />
         </div>
-        <div className="w-full mdl:w-[80%] lgl:w-[75%] h-full flex flex-col gap-10">
-          <ProductBanner itemsPerPageFromBanner={manejarItemsPorPagina} />
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
-            {productos.map((producto) => (
-              <Product
-                key={producto.idProducto}
-                idProducto={producto.idProducto}
-                nombreProducto={producto.nombreProducto}
-                descripcion={producto.descripcion}
-                precio={producto.precio}
-                precioEspecial={producto.precioEspecial}
-                image_url={producto.image_url}
-                nombreMaterial={producto.nombreMaterial}
-                destacado={producto.destacado}
-              />
-            ))}
+        {/* Panel Derecho */}
+        <div className="flex-1 overflow-y-auto bg-white p-5 mt-20 sm:mt-12 scrollbar-none">
+          {/* responsive celular */}
+          <div className="md:hidden flex flex-col gap-y-4">
+            {productos
+              .filter((p) => p.nombre.toLowerCase().includes(busqueda.toLowerCase()))
+              .map((producto) => (
+                <Product
+                  key={producto.idProducto}
+                  idProducto={producto.idProducto}
+                  nombreProducto={producto.nombreProducto}
+                  descripcion={producto.descripcion}
+                  precio={producto.precio}
+                  precioEspecial={producto.precioEspecial}
+                  image_url={producto.image_url}
+                  nombreMaterial={producto.nombreMaterial}
+                  destacado={producto.destacado}
+                />
+              ))}
           </div>
+
+          {/* Vista Computadora */}
+          <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {productos
+              .filter((p) => p.nombre.toLowerCase().includes(busqueda.toLowerCase()))
+              .map((producto) => (
+                <div key={producto.idProducto} className="w-full">
+                  <Product
+                    key={producto.idProducto}
+                    idProducto={producto.idProducto}
+                    nombreProducto={producto.nombreProducto}
+                    descripcion={producto.descripcion}
+                    precio={producto.precio}
+                    precioEspecial={producto.precioEspecial}
+                    image_url={producto.image_url}
+                    nombreMaterial={producto.nombreMaterial}
+                    destacado={producto.destacado}
+                  />
+                </div>
+              ))}
+          </div>
+
           <Pagination itemsPerPage={itemsPorPagina} />
         </div>
       </div>
