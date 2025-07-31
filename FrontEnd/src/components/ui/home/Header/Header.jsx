@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { MdClose } from "react-icons/md";
 import { HiMenuAlt2 } from "react-icons/hi";
 import { FiShoppingCart } from "react-icons/fi";
 import { motion } from "framer-motion";
-import { useSelector } from "react-redux"; // 🔥 NUEVO
+import { useSelector } from "react-redux";
 import { logo } from "@/assets/images";
 import Image from "@/components/ui/designLayouts/Image";
 import Flex from "@/components/ui/designLayouts/Flex";
@@ -16,9 +16,10 @@ const Header = () => {
   const [category, setCategory] = useState(false);
   const location = useLocation();
 
+  // Lógica para mostrar el menú responsivo
   useEffect(() => {
     const ResponsiveMenu = () => {
-      setShowMenu(window.innerWidth >= 667);
+      setShowMenu(window.innerWidth >= 768); // Ajustar la visibilidad según el tamaño de la pantalla
     };
     ResponsiveMenu();
     window.addEventListener("resize", ResponsiveMenu);
@@ -33,13 +34,13 @@ const Header = () => {
             <Image className="w-20 object-cover" imgSrc={logo} />
           </Link>
 
-          <div>
+          <div className="flex items-center justify-between w-full">
             {showMenu && (
               <motion.ul
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5 }}
-                className="flex items-center gap-2"
+                className="hidden md:flex items-center gap-2 md:gap-4"
               >
                 {navBarList.map(({ _id, title, link }) => (
                   <NavLink
@@ -54,11 +55,13 @@ const Header = () => {
               </motion.ul>
             )}
 
+            {/* Botón hamburguesa */}
             <HiMenuAlt2
               onClick={() => setSidenav(!sidenav)}
               className="inline-block md:hidden cursor-pointer w-8 h-6 absolute top-6 right-4"
             />
 
+            {/* Menú lateral (hamburguesa) */}
             {sidenav && (
               <div className="fixed top-0 left-0 w-full h-screen bg-black text-gray-200 bg-opacity-80 z-50">
                 <motion.div
@@ -68,7 +71,7 @@ const Header = () => {
                   className="w-[80%] h-full relative"
                 >
                   <div className="w-full h-full bg-primeColor p-6">
-                    <img className="w-28 mb-6" src={logoLight} alt="logo" />
+                    <img className="w-28 mb-6" src={logo} alt="logo" />
                     <ul className="text-gray-200 flex flex-col gap-2 mb-4">
                       {navBarList.map((item) => (
                         <li

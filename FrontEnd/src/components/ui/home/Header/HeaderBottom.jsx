@@ -8,9 +8,8 @@ import { useSelector } from "react-redux";
 import Flex from "@/components/ui/designLayouts/Flex";
 import { paginationItems } from "@/constants";
 
-
 const HeaderBottom = () => {
- const products = useSelector((state) => state.carrito?.productos ?? []);
+  const products = useSelector((state) => state.carrito?.productos ?? []);
   const [show, setShow] = useState(false);
   const [showUser, setShowUser] = useState(false);
   const navigate = useNavigate();
@@ -50,7 +49,7 @@ const HeaderBottom = () => {
           <div
             onClick={() => setShow(!show)}
             ref={ref}
-            className="flex h-14 cursor-pointer items-center gap-2 text-primeColor"
+            className="flex h-14 cursor-pointer items-center gap-2 text-primeColor lg:hidden"
           >
             <HiOutlineMenuAlt4 className="w-5 h-5" />
             <p className="text-[14px] font-normal">Categorías</p>

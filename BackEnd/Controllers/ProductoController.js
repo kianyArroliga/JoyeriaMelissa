@@ -81,8 +81,6 @@ const ProductoController = {
         }
     },
 
-
-    // Listar todos los productos (admin)
     listarTodos: (req, res) => {
         ProductoTo.obtenerTodos((err, productos) => {
             if (err) {
@@ -115,9 +113,6 @@ const ProductoController = {
             const { idProducto } = req.params;
             const { nombre, estado, precio, idCategoria, idPiedra, idMaterial, descripcion, precioEspecial, destacado, tallas, stock } = req.body;
 
-            console.log("Datos recibidos en el body:", req.body);
-            console.log("Imagen recibida:", req.file);
-
             ProductoTo.obtenerPorId(idProducto, async (err, productoExistente) => {
                 if (err) {
                     console.error("Error al buscar el producto:", err);
@@ -143,7 +138,7 @@ const ProductoController = {
 
                 const productoActualizado = {
                     nombre: nombre || productoExistente.nombre,
-                    estado: parseInt(estado, 10) === 1 ? 1 : 0, //Forzar a número
+                    estado: parseInt(estado, 10) === 1 ? 1 : 0,
                     image_url: nuevaImagen,
                     precio: precio === undefined || precio === "" ? null : parseFloat(precio),
                     idCategoria,
@@ -203,6 +198,24 @@ const ProductoController = {
             res.status(200).json({ mensaje: 'Producto  y tallas eliminado exitosamente' });
         })
     },
+
+    filtrar: (req, res) => {
+        const filtros = {
+            categoria: req.query.categoria || null,
+            material: req.query.material || null,
+            piedra: req.query.piedra || null,
+            talla: req.query.talla || null,
+            precioMin: req.query.precioMin || null,
+            precioMax: req.query.precioMax || null,
+        };
+        
+        ProductoTo.filtrar(filtros, (err, productos) => {
+            if (err) {
+                return res.status(500).json({ error: 'Error al filtrar los productos' });
+            }
+            res.json(productos);
+        });
+    }
 };
 
 module.exports = ProductoController;

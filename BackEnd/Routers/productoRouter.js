@@ -1,19 +1,25 @@
-const express = require('express')
-const router = express.Router()
-const multer = require('multer')
-const upload = multer({ dest: 'uploads/' })
-const ProductoController = require('../Controllers/ProductoController')
-const ProductoTo = require('../Modelo/ProductoTo')
- 
-// Agregrar un producto
-router.post('/agregar',upload.single('imagen'), ProductoController.agregarProducto);
-// Admin: listar todos los productos (activos e inactivos)
+const express = require('express');
+const router = express.Router();
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
+const ProductoController = require('../Controllers/ProductoController');
+
+// Agregar un producto
+router.post('/agregar', upload.single('imagen'), ProductoController.agregarProducto);
+
+// Listar todos los productos (activos e inactivos)
 router.get('/todos', ProductoController.listarTodos);
-// Actualizar un producto
-router.put('/editar/:idProducto',upload.single("imagen"), ProductoController.editarProducto);
+
+// Obtener un producto por ID
 router.get('/editar/:idProducto', ProductoController.obtenerProductoPorId);
-//Eliminar un producto
+
+// Actualizar un producto
+router.put('/editar/:idProducto', upload.single('imagen'), ProductoController.editarProducto);
+
+// Eliminar un producto
 router.delete('/borrar/:idProducto', ProductoController.eliminarProducto);
- 
- 
-module.exports = router
+
+// Filtrar productos según los parámetros
+router.get('/filtros', ProductoController.filtrar);
+
+module.exports = router;

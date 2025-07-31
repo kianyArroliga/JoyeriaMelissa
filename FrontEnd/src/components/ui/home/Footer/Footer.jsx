@@ -32,14 +32,14 @@ const Footer = () => {
 
   return (
     <div className="w-full bg-[#F5F5F3] py-20">
-      <div className="max-w-container mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 px-4 gap-10">
-        <div className="col-span-2">
+      <div className="max-w-container mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 px-4 gap-10">
+        <div className="col-span-2 sm:col-span-2 md:col-span-1">
           <FooterListTitle title="Sobre Melissa Aguilar Joyería" />
           <div className="flex flex-col gap-6">
             <p className="text-base w-full xl:w-[80%]">
               Joyería artesanal creada con amor en Costa Rica. Piezas únicas, piedras naturales y un estilo que te acompaña siempre.
             </p>
-            <ul className="flex items-center gap-2">
+            <ul className="flex gap-2">
               <li className="w-7 h-7 rounded-full bg-primeColor hover:bg-black duration-300 flex justify-center items-center">
                 <a
                   href="https://www.instagram.com/melissaaguilarjoyeria/"
