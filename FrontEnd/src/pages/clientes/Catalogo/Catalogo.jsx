@@ -1,19 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Breadcrumbs from "@/components/ui/pageProps/Breadcrumbs";
 import Pagination from "@/components/ui/pageProps/shopPage/Pagination";
 import ProductBanner from "@/components/ui/pageProps/shopPage/ProductBanner";
-import NavLatTienda from "@/components/ui/pageProps/shopPage/NavLatTienda";
 import Product from "@/components/ui/home/Products/Product";
+import FiltrosCatalogo from "@/components/ui/pageProps/shopPage/FiltrosCatalogo";
 
 const Catalogo = () => {
   const [itemsPorPagina, setItemsPorPagina] = useState(12);
   const [productos, setProductos] = useState([]);
+  const [filtros, setFiltros] = useState({});
 
+  // Hook que se activa cuando se cambian los filtros
   useEffect(() => {
     const obtenerProductos = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api/clientes/catalogo/inicio");
+        const res = await axios.get("http://localhost:4000/api/clientes/catalogo/filtros", {
+          params: filtros,  // Pasamos los filtros como parámetros
+        });
         setProductos(res.data);
       } catch (error) {
         console.error("Error al cargar los productos:", error);
@@ -21,10 +25,16 @@ const Catalogo = () => {
     };
 
     obtenerProductos();
-  }, []);
+  }, [filtros]);  // Se vuelve a ejecutar cuando cambian los filtros
 
+  // Función para manejar el cambio en el número de productos por página
   const manejarItemsPorPagina = (valor) => {
     setItemsPorPagina(valor);
+  };
+
+  // Función para actualizar los filtros
+  const manejarFiltros = (nuevosFiltros) => {
+    setFiltros(nuevosFiltros);
   };
 
   return (
@@ -32,7 +42,8 @@ const Catalogo = () => {
       <Breadcrumbs title="Catálogo" />
 
       <div className="w-full h-full flex pb-20 gap-10">
-        <div className="w-[20%] lgl:w-[25%] hidden mdl:inline-flex h-full">
+        <div className="w-[20%] lgl:w-[25%] md:block h-full">
+          <FiltrosCatalogo onFilterChange={manejarFiltros} />
         </div>
         <div className="w-full mdl:w-[80%] lgl:w-[75%] h-full flex flex-col gap-10">
           <ProductBanner itemsPerPageFromBanner={manejarItemsPorPagina} />
@@ -55,7 +66,6 @@ const Catalogo = () => {
           <Pagination itemsPerPage={itemsPorPagina} />
         </div>
       </div>
-
     </div>
   );
 };
