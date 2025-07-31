@@ -10,7 +10,7 @@ const ProductoController = {
 
         if (!nombre || nombre.trim() === '' ||
             !descripcion || descripcion.trim() === '' ||
-            (!precio && !precioEspecial) ||
+            (precio === undefined || precio === "") && (precioEspecial === undefined || precioEspecial === "") ||
             !idCategoria || !idPiedra || !idMaterial) {
             return res.status(400).json({ error: 'Todos los campos son obligatorios y deben ser válidos' });
         }
@@ -27,7 +27,7 @@ const ProductoController = {
             const nuevoProducto = {
                 nombre: nombre.trim(),
                 estado: parseInt(estado, 10) === 1 ? 1 : 0,
-                precio: precio || null,
+                precio: precio === undefined || precio === "" ? null : parseFloat(precio),
                 image_url: resultado.secure_url,
                 idCategoria,
                 idPiedra,
@@ -71,6 +71,7 @@ const ProductoController = {
                     return res.status(201).json({
                         mensaje: 'Producto y tallas/stock registrados correctamente',
                         id: idProducto,
+                        image_url: resultado.secure_url,
                     });
                 });
             });
@@ -144,7 +145,7 @@ const ProductoController = {
                     nombre: nombre || productoExistente.nombre,
                     estado: parseInt(estado, 10) === 1 ? 1 : 0, //Forzar a número
                     image_url: nuevaImagen,
-                    precio,
+                    precio: precio === undefined || precio === "" ? null : parseFloat(precio),
                     idCategoria,
                     idPiedra,
                     idMaterial,
